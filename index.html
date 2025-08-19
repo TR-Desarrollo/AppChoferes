@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Importes Diarios</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <button id="menu-toggle" aria-label="Abrir menú">☰</button>
+  <div id="sidebar" class="sidebar-oculto">
+    <section id="modo-dark-toggle" style="display:flex;align-items:center;gap:0.7rem;margin-bottom:1.5rem;">
+      <label for="switch-dark" style="font-size:1.1rem;cursor:pointer;">🌙 Modo oscuro</label>
+      <input type="checkbox" id="switch-dark" style="width:2rem;height:1.2rem;cursor:pointer;">
+    </section>
+    <section id="consultas">
+      <h2>Consultas</h2>
+      <div>
+        <button id="btn-consulta-dia">Ver Turnos</button>
+      </div>
+      <div style="margin-top:1rem;">
+        <label for="consulta-dia">Consultar por día:</label>
+        <input type="date" id="consulta-dia">
+        <button id="btn-consulta-dia-unica">Consultar</button>
+      </div>
+      <div style="margin-top:1rem;">
+        <label for="consulta-desde">Desde:</label>
+        <input type="date" id="consulta-desde">
+        <label for="consulta-hasta">Hasta:</label>
+        <input type="date" id="consulta-hasta">
+        <button id="btn-consulta-rango">Consultar Rango</button>
+      </div>
+      <div id="resultado-consulta"></div>
+    </section>
+    <section id="backup-restore" style="margin-bottom:1.5rem;">
+      <button id="btn-backup" style="width:100%;margin-bottom:0.5rem;">📥 Descargar Backup</button>
+      <label for="input-restore" style="display:block;width:100%;">
+        <span style="display:inline-block;width:100%;background:#7ec0ee;color:#222e3a;padding:0.4rem 0;border-radius:4px;text-align:center;cursor:pointer;">📤 Restaurar Backup</span>
+        <input type="file" id="input-restore" accept="application/json" style="display:none;">
+      </label>
+    </section>
+  </div>
+  <div id="sidebar-overlay" class="sidebar-overlay-oculto"></div>
+  <main>
+    <div id="main-header-fijo">
+      <h1 id="titulo-app">ControlChoferes</h1>
+      <div id="estado-turno"></div>
+      <div id="fecha-actual"></div>
+      <!-- El botón Iniciar Turno se inserta aquí por JS -->
+      <form id="importe-form">
+        <input type="number" id="importe-input" placeholder="Agregar importe" step="0.01" min="0" required>
+        <button type="submit">Agregar</button>
+      </form>
+      <section id="resumen">
+        <p>Total: <span id="total">$0</span></p>
+        <p>Cantidad: <span id="cantidad">0</span></p>
+      </section>
+      <ul id="lista-importes"></ul>
+    </div>
+    <div id="consulta-principal" style="display:none;"></div>
+    <div id="tabla-turnos-recientes-container" style="margin-top:2rem;"></div>
+    <button id="finalizar-dia">Finalizar Turno</button>
+  </main>
+  <footer id="footer-app">
+    Desarrollada por <a href="https://rizzofs.github.io/Mi-Porfolio2/" target="_blank" rel="noopener">Federico Rizzo</a>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.0/jspdf.plugin.autotable.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
