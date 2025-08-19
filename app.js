@@ -1,3 +1,154 @@
+// --- AUTENTICACIÓN ---
+const API_URL = 'https://sheetdb.io/api/v1/09cpeqv911tr5'; // Reemplaza por tu URL real de SheetDB
+
+function mostrarAuth(showLogin = true) {
+  const auth = document.getElementById('auth-container');
+  const loginForm = document.getElementById('login-form');
+  const registroForm = document.getElementById('registro-form');
+  const authTitle = document.getElementById('auth-title');
+  const toggleBtn = document.getElementById('toggle-auth');
+  const msg = document.getElementById('auth-msg');
+  if (auth) auth.style.display = 'flex';
+  if (loginForm) loginForm.style.display = showLogin ? 'block' : 'none';
+  if (registroForm) registroForm.style.display = showLogin ? 'none' : 'block';
+  if (authTitle) authTitle.textContent = showLogin ? 'Iniciar sesión' : 'Registrarse';
+  if (toggleBtn) toggleBtn.textContent = showLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión';
+  if (msg) msg.textContent = '';
+}
+function ocultarAuth() {
+  const auth = document.getElementById('auth-container');
+  if (auth) auth.style.display = 'none';
+}
+function guardarSesion(email, nombre) {
+  localStorage.setItem('usuario', JSON.stringify({ email, nombre }));
+}
+function limpiarSesion() {
+  localStorage.removeItem('usuario');
+}
+function usuarioLogueado() {
+  return !!localStorage.getItem('usuario');
+}
+function cerrarSesion() {
+  limpiarSesion();
+  location.reload();
+}
+function mostrarApp() {
+  const mainApp = document.getElementById('main-app');
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.getElementById('menu-toggle');
+  if (mainApp) mainApp.style.display = '';
+  if (sidebar) sidebar.style.display = '';
+  if (menuToggle) menuToggle.style.display = '';
+}
+function ocultarApp() {
+  const mainApp = document.getElementById('main-app');
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.getElementById('menu-toggle');
+  if (mainApp) mainApp.style.display = 'none';
+  if (sidebar) sidebar.style.display = 'none';
+  if (menuToggle) menuToggle.style.display = 'none';
+}
+// --- Eventos de login/registro ---
+window.addEventListener('DOMContentLoaded', function() {
+  // Mostrar login si no hay usuario
+  if (!usuarioLogueado()) {
+    ocultarApp();
+    mostrarAuth(true);
+  } else {
+    mostrarApp();
+    ocultarAuth();
+  }
+  // Alternar login/registro
+  const toggleBtn = document.getElementById('toggle-auth');
+  let loginVisible = true;
+  if (toggleBtn) {
+    toggleBtn.onclick = function(e) {
+      e.preventDefault();
+      loginVisible = !loginVisible;
+      mostrarAuth(loginVisible);
+    };
+  }
+  // Login
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.onsubmit = function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const clave = document.getElementById('login-clave').value.trim();
+      const msg = document.getElementById('auth-msg');
+      fetch(`${API_URL}/search?email=${encodeURIComponent(email)}&clave=${encodeURIComponent(clave)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!Array.isArray(data) || data.length === 0) {
+            if (msg) msg.textContent = 'Usuario o clave incorrectos.';
+          } else if (data[0].activo !== 'SI') {
+            if (msg) msg.textContent = 'Acceso no habilitado. Contacta al administrador.';
+          } else {
+            guardarSesion(email, data[0].nombre || '');
+            ocultarAuth();
+            mostrarApp();
+            location.reload(); // Fuerza recarga para limpiar estado y mostrar solo los datos del usuario logueado
+          }
+        })
+        .catch(() => { if (msg) msg.textContent = 'Error de conexión.'; });
+    };
+  }
+  // Registro
+  const registroForm = document.getElementById('registro-form');
+  if (registroForm) {
+    registroForm.onsubmit = function(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('registro-nombre').value.trim();
+      const email = document.getElementById('registro-email').value.trim();
+      const clave = document.getElementById('registro-clave').value.trim();
+      const msg = document.getElementById('auth-msg');
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: [{ email, clave, nombre, activo: 'NO' }] })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.created) {
+          if (msg) msg.style.color = '#43a047';
+          if (msg) msg.textContent = 'Registrado correctamente. Espera aprobación.';
+        } else {
+          if (msg) msg.style.color = '#c62828';
+          if (msg) msg.textContent = 'No se pudo registrar. ¿Ya existe ese email?';
+        }
+      })
+      .catch(() => { if (msg) msg.textContent = 'Error de conexión.'; });
+    };
+  }
+  // Botón cerrar sesión en el sidebar
+  const btnLogout = document.getElementById('btn-logout');
+  if (btnLogout) {
+    btnLogout.onclick = function() {
+      if (getTurnoActivo()) {
+        alert('Debes finalizar el turno antes de cerrar sesión.');
+        return;
+      }
+      limpiarSesion();
+      ocultarApp();
+      mostrarAuth(true);
+    };
+  }
+  // Botón cerrar sesión (puedes agregarlo donde quieras)
+  const mainHeader = document.getElementById('main-header-fijo');
+  if (mainHeader) {
+    let btnLogout = document.getElementById('btn-logout');
+    if (!btnLogout) {
+      btnLogout = document.createElement('button');
+      btnLogout.id = 'btn-logout';
+      btnLogout.textContent = 'Cerrar sesión';
+      btnLogout.style = 'position:absolute;top:1.2rem;right:1.2rem;background:#ff5252;color:#fff;border:none;border-radius:6px;padding:0.5rem 1.1rem;font-size:1rem;cursor:pointer;z-index:200;';
+      btnLogout.onclick = cerrarSesion;
+      mainHeader.appendChild(btnLogout);
+    }
+  }
+});
+
+
 // Utilidades para fechas
 function getTodayKey() {
   const today = new Date();
@@ -19,13 +170,25 @@ function saveImportes(importes) {
 }
 
 // --- Turnos personalizados ---
+function getUsuarioEmail() {
+  const usuario = localStorage.getItem('usuario');
+  if (!usuario) return null;
+  try {
+    return JSON.parse(usuario).email;
+  } catch {
+    return null;
+  }
+}
+function getTurnosKey() {
+  const email = getUsuarioEmail();
+  return email ? `turnos_${email}` : 'turnos';
+}
 function getTurnos() {
-  const data = localStorage.getItem('turnos');
+  const data = localStorage.getItem(getTurnosKey());
   return data ? JSON.parse(data) : [];
 }
-
 function saveTurnos(turnos) {
-  localStorage.setItem('turnos', JSON.stringify(turnos));
+  localStorage.setItem(getTurnosKey(), JSON.stringify(turnos));
 }
 
 function getTurnoActivo() {
@@ -575,9 +738,9 @@ function aplicarModoDark() {
   if (switchDark) switchDark.checked = dark;
 }
 
-// Backup y restaurar datos
+// Backup y restaurar datos (ajustar para usuario)
 function descargarBackup() {
-  const turnos = localStorage.getItem('turnos') || '[]';
+  const turnos = localStorage.getItem(getTurnosKey()) || '[]';
   const blob = new Blob([turnos], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -598,7 +761,7 @@ function restaurarBackup(archivo) {
       const data = JSON.parse(e.target.result);
       if (Array.isArray(data) && data.length > 0 && data[0].inicio && data[0].importes) {
         if (confirm('¿Seguro que quieres reemplazar todos los turnos actuales por este backup?')) {
-          localStorage.setItem('turnos', JSON.stringify(data));
+          localStorage.setItem(getTurnosKey(), JSON.stringify(data));
           render();
           alert('Backup restaurado correctamente.');
         }
@@ -613,7 +776,7 @@ function restaurarBackup(archivo) {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-  cargarTurnosPrueba();
+  // cargarTurnosPrueba(); // <-- Comentado para no borrar ni sobreescribir datos reales
   renderFecha();
   render();
   aplicarModoDark();
@@ -669,6 +832,11 @@ window.addEventListener('DOMContentLoaded', function() {
         e.target.value = '';
       }
     });
+  }
+  // Botón cerrar sesión al final del sidebar
+  let btnLogout = document.getElementById('btn-logout');
+  if (btnLogout) {
+    btnLogout.onclick = cerrarSesion;
   }
 });
 
