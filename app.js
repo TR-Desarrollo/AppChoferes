@@ -218,12 +218,12 @@ function finalizarTurno() {
   render();
 }
 
-function agregarImporteATurno(valor) {
+function agregarImporteATurno(valor, tipo = 'Efectivo') {
   const turnos = getTurnos();
   const idx = turnos.findIndex(t => !t.fin);
   if (idx !== -1) {
     const ahora = new Date();
-    turnos[idx].importes.push({ valor, hora: ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) });
+    turnos[idx].importes.push({ valor, hora: ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), tipo });
     saveTurnos(turnos);
   }
 }
@@ -265,7 +265,7 @@ function render() {
       total += (typeof imp === 'object' ? imp.valor : imp);
       const li = document.createElement('li');
       if (typeof imp === 'object') {
-        li.innerHTML = `<span class='hora-importe'>${imp.hora}</span><span class='valor-importe'>$${imp.valor.toFixed(2)}</span>`;
+        li.innerHTML = `<span class='hora-importe'>${imp.hora}</span><span class='valor-importe'>$${imp.valor.toFixed(2)}</span><span class='tipo-importe'>${imp.tipo || 'Efectivo'}</span>`;
       } else {
         li.textContent = `$${imp.toFixed(2)}`;
       }
@@ -303,31 +303,41 @@ function editarImporteInline(idx, imp) {
   const li = lista.children[lista.children.length - 1 - idx];
   if (!li) return;
   const valorOriginal = typeof imp === 'object' ? imp.valor : imp;
+  const tipoOriginal = (typeof imp === 'object' && imp.tipo) ? imp.tipo : 'Efectivo';
   li.innerHTML = `<input type='number' id='edit-importe' value='${valorOriginal}' style='width:90px;height:2.2rem;font-size:1.1rem;text-align:right;margin-right:0.5rem;'>
+    <select id='edit-tipo' style='height:2.2rem;font-size:1.1rem;margin-right:0.5rem;'>
+      <option value='Efectivo' ${tipoOriginal==='Efectivo'?'selected':''}>Efectivo</option>
+      <option value='Transferencia' ${tipoOriginal==='Transferencia'?'selected':''}>Transferencia</option>
+      <option value='Vale' ${tipoOriginal==='Vale'?'selected':''}>Vale</option>
+    </select>
     <button id='guardar-edit' style='background:#43a047;color:#fff;border:none;border-radius:4px;padding:0.2rem 0.7rem;cursor:pointer;'>✔</button>
     <button id='cancelar-edit' style='background:#ff5252;color:#fff;border:none;border-radius:4px;padding:0.2rem 0.7rem;cursor:pointer;'>✖</button>`;
   const input = li.querySelector('#edit-importe');
+  const select = li.querySelector('#edit-tipo');
   input.focus();
-  // Guardar
   li.querySelector('#guardar-edit').onclick = function(e) {
     e.stopPropagation();
     const nuevoValor = parseFloat(input.value);
-    if (!isNaN(nuevoValor) && nuevoValor > 0) {
-      const turnos = getTurnos();
-      const turno = getTurnoActivo();
-      const idxTurno = turnos.findIndex(t => t.inicio === turno.inicio);
-      if (idxTurno !== -1) {
+    const nuevoTipo = select.value;
+    const turnos = getTurnos();
+    const turno = getTurnoActivo();
+    const idxTurno = turnos.findIndex(t => t.inicio === turno.inicio);
+    if (idxTurno !== -1) {
+      if (input.value === '' || isNaN(nuevoValor)) {
+        // Eliminar el importe
+        turnos[idxTurno].importes.splice(idx, 1);
+      } else {
         if (typeof turnos[idxTurno].importes[idx] === 'object') {
           turnos[idxTurno].importes[idx].valor = nuevoValor;
+          turnos[idxTurno].importes[idx].tipo = nuevoTipo;
         } else {
-          turnos[idxTurno].importes[idx] = nuevoValor;
+          turnos[idxTurno].importes[idx] = { valor: nuevoValor, hora: imp.hora || '', tipo: nuevoTipo };
         }
-        saveTurnos(turnos);
-        render();
       }
+      saveTurnos(turnos);
+      render();
     }
   };
-  // Cancelar
   li.querySelector('#cancelar-edit').onclick = function(e) {
     e.stopPropagation();
     render();

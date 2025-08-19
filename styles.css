@@ -831,3 +831,18 @@ body.dark-mode #cantidad {
 #importe-input::placeholder {
   text-align: center;
 }
+.tipo-importe {
+  display: inline-block;
+  min-width: 90px;
+  text-align: center;
+  margin-left: 1rem;
+  font-size: 1.05rem;
+  color: #007bff;
+}
+#lista-importes select {
+  font-size: 1.1rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  margin-right: 0.5rem;
+}
