@@ -5,6 +5,7 @@ body {
   color: #23272f;
   letter-spacing: 0.01em;
   line-height: 1.6;
+  transition: background 0s, color 0s; /* Cambio instantáneo para modo dark/light */
 }
 
 /* Botones principales */
@@ -163,13 +164,35 @@ body.dark-mode #sidebar {
   font-size: 1.5rem;
 }
 
-/* Lista de importes */
+/* Lista de importes con scroll */
 #lista-importes {
   background: #f8fbff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,123,255,0.06);
   padding: 0.5rem 0.2rem;
   margin-bottom: 1.2rem;
+  max-height: 300px; /* Altura máxima para activar scroll */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar personalizado para la lista de importes */
+#lista-importes::-webkit-scrollbar {
+  width: 6px;
+}
+
+#lista-importes::-webkit-scrollbar-track {
+  background: #e3eafc;
+  border-radius: 3px;
+}
+
+#lista-importes::-webkit-scrollbar-thumb {
+  background: #007bff;
+  border-radius: 3px;
+}
+
+#lista-importes::-webkit-scrollbar-thumb:hover {
+  background: #0056b3;
 }
 #lista-importes li {
   background: #fff;
@@ -306,6 +329,8 @@ body.dark-mode #sidebar {
   border-top: 1px solid #e3eafc;
   box-shadow: 0 -1px 4px rgba(0,0,0,0.04);
   z-index: 2000;
+  height: 50px;
+  box-sizing: border-box;
 }
 #footer-app a {
   color: #007bff;
@@ -345,6 +370,46 @@ input, select, textarea, button, .btn {
 body.dark-mode {
   background: #181c22;
   color: #e0e0e0;
+  transition: background 0s, color 0s; /* Cambio instantáneo para modo dark */
+}
+
+/* Transiciones instantáneas para cambios de modo dark/light */
+body.dark-mode *,
+body:not(.dark-mode) * {
+  transition: background 0s, color 0s, border-color 0s, box-shadow 0s;
+}
+
+/* Elementos principales con cambio instantáneo */
+body.dark-mode #main-header-fijo,
+body.dark-mode #sidebar,
+body.dark-mode #footer-app,
+body.dark-mode #auth-box,
+body.dark-mode #tabla-turnos-recientes-container,
+body:not(.dark-mode) #main-header-fijo,
+body:not(.dark-mode) #sidebar,
+body:not(.dark-mode) #footer-app,
+body:not(.dark-mode) #auth-box,
+body:not(.dark-mode) #tabla-turnos-recientes-container {
+  transition: background 0s, color 0s, border-color 0s, box-shadow 0s;
+}
+
+/* Restaurar transiciones solo para hover y focus */
+body.dark-mode button:hover,
+body.dark-mode input:hover,
+body.dark-mode select:hover,
+body:not(.dark-mode) button:hover,
+body:not(.dark-mode) input:hover,
+body:not(.dark-mode) select:hover {
+  transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+}
+
+body.dark-mode button:focus,
+body.dark-mode input:focus,
+body.dark-mode select:focus,
+body:not(.dark-mode) button:focus,
+body:not(.dark-mode) input:focus,
+body:not(.dark-mode) select:focus {
+  transition: border 0.18s, box-shadow 0.18s;
 }
 body.dark-mode #main-header-fijo,
 body.dark-mode main {
@@ -452,6 +517,19 @@ body.dark-mode #lista-importes .tipo-importe {
   color: #66bb6a;
 }
 
+/* Scrollbar modo dark para la lista de importes */
+body.dark-mode #lista-importes::-webkit-scrollbar-track {
+  background: #2c3e50;
+}
+
+body.dark-mode #lista-importes::-webkit-scrollbar-thumb {
+  background: #90caf9;
+}
+
+body.dark-mode #lista-importes::-webkit-scrollbar-thumb:hover {
+  background: #64b5f6;
+}
+
 /* Responsive y mejoras móviles (mantengo lo anterior, pero con mejor UI) */
 @media (max-width: 700px) {
   #main-header-fijo {
@@ -467,7 +545,7 @@ body.dark-mode #lista-importes .tipo-importe {
     max-width: 96vw;
     width: 96vw;
     margin: 0 auto;
-    max-height: 38vh;
+    max-height: 250px; /* Altura fija más pequeña en móviles */
     overflow-y: auto;
   }
   #tabla-turnos-recientes-container {
@@ -543,9 +621,9 @@ body.dark-mode #lista-importes .tipo-importe {
   justify-content: flex-start;
   position: fixed;
   left: 0;
-  top: 0;
+  top: 70px; /* Posicionar debajo del header fijo */
   width: 260px;
-  height: 100vh;
+  height: calc(100vh - 70px); /* Altura ajustada para el header */
   background: #fff;
   color: #23272f;
   padding: 2.2rem 1rem 3.5rem 1rem;
@@ -600,6 +678,8 @@ body.dark-mode #lista-importes .tipo-importe {
     max-width: 320px;
     padding-top: 1.2rem;
     padding-bottom: 4.5rem;
+    top: 60px; /* Ajustar para header más pequeño en móviles */
+    height: calc(100vh - 60px);
   }
   #drawer-sidebar button, #drawer-sidebar input[type="button"] {
     max-width: 98vw;
@@ -634,6 +714,57 @@ body.dark-mode #drawer-sidebar {
 .drawer-overlay-visible {
   display: block;
   opacity: 1;
+}
+
+/* Estilos para el toggle del modo dark/light */
+#modo-dark-toggle {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+#icon-dark-label {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#icon-dark-label:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+  transform: scale(1.1);
+}
+
+#icon-dark-label:active {
+  transform: scale(0.95);
+  background-color: rgba(0, 123, 255, 0.2);
+}
+
+/* Estilos específicos para modo dark en el icono */
+body.dark-mode #icon-dark-label:hover {
+  background-color: rgba(144, 202, 249, 0.2);
+}
+
+body.dark-mode #icon-dark-label:active {
+  background-color: rgba(144, 202, 249, 0.3);
+}
+
+/* Mejoras para dispositivos móviles */
+@media (max-width: 768px) {
+  #icon-dark-label {
+    padding: 12px;
+    font-size: 1.8rem;
+    min-width: 48px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #modo-dark-toggle {
+    gap: 1rem;
+  }
 }
 
 #switch-dark {
@@ -764,6 +895,389 @@ table th, table td {
   vertical-align: middle;
   color: #43a047;
   font-weight: 600;
+}
+
+/* Dashboard Styles */
+#dashboard-container {
+  font-family: 'Inter', Arial, Helvetica, system-ui, sans-serif;
+  position: relative;
+  z-index: 2100; /* Mayor que footer (2000) pero menor que sidebar (3000) */
+  margin: 2rem auto;
+}
+
+/* Asegurar que el dashboard esté por encima del footer en todos los contextos */
+#consulta-principal {
+  position: relative;
+  z-index: 2100;
+}
+
+#btn-iniciar-turno-dashboard:hover {
+  transform: translateY(-4px) scale(1.02) !important;
+  box-shadow: 0 12px 30px rgba(76,175,80,0.5) !important;
+}
+
+#btn-iniciar-turno-dashboard:active {
+  transform: translateY(-2px) scale(0.98) !important;
+}
+
+/* Estilos para modo dark en el dashboard */
+body.dark-mode #dashboard-container {
+  color: #e0e0e0;
+}
+
+body.dark-mode #dashboard-container .resumen-rapido {
+  background: #23272f !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode #dashboard-container h3 {
+  color: #90caf9 !important;
+}
+
+body.dark-mode #dashboard-container .resumen-item {
+  background: #2c3e50 !important;
+  border-left-color: #90caf9 !important;
+}
+
+body.dark-mode #dashboard-container .resumen-item .fecha {
+  color: #90caf9 !important;
+}
+
+body.dark-mode #dashboard-container .resumen-item .viajes {
+  color: #bdbdbd !important;
+}
+
+body.dark-mode #dashboard-container .resumen-item .total {
+  color: #66bb6a !important;
+}
+
+/* Responsive design para el dashboard */
+@media (max-width: 768px) {
+  #dashboard-container {
+    margin: 1.5rem auto;
+    padding: 0 0.5rem;
+  }
+  
+  #dashboard-container h1 {
+    font-size: 2rem !important;
+  }
+  
+  #btn-iniciar-turno-dashboard {
+    padding: 1.5rem 3rem !important;
+    font-size: 1.4rem !important;
+    width: 100%;
+    max-width: 320px;
+    min-width: 250px !important;
+  }
+  
+  #dashboard-container .estadisticas-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  #dashboard-container .resumen-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #dashboard-container {
+    margin: 1rem auto;
+  }
+  
+  #dashboard-container h1 {
+    font-size: 1.8rem !important;
+  }
+  
+  #btn-iniciar-turno-dashboard {
+    padding: 1.3rem 2.5rem !important;
+    font-size: 1.3rem !important;
+  }
+}
+
+/* Header fijo principal */
+#main-header-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 4000;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e3eafc;
+  height: 70px;
+  box-sizing: border-box;
+}
+
+#main-header-fixed h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #007bff;
+}
+
+#main-header-fixed img {
+  max-width: 40px;
+  width: 40px;
+  height: auto;
+  display: block;
+}
+
+#main-header-fixed #menu-toggle {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#main-header-fixed #menu-toggle:hover {
+  background: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Ajustar el modo dark para el header */
+body.dark-mode #main-header-fixed {
+  background: #23272f;
+  border-bottom-color: #444;
+}
+
+body.dark-mode #main-header-fixed h1 {
+  color: #90caf9;
+}
+
+/* Responsive para el header */
+@media (max-width: 768px) {
+  #main-header-fixed {
+    padding: 0.6rem 0.8rem;
+    height: 60px;
+  }
+  
+  #main-scroll-container {
+    top: 60px;
+    bottom: 50px;
+  }
+  
+  #main-app {
+    min-height: calc(100vh - 110px); /* 60px header + 50px footer */
+  }
+  
+  #main-header-fixed h1 {
+    font-size: 1.3rem;
+  }
+  
+  #main-header-fixed img {
+    max-width: 35px;
+    width: 35px;
+  }
+  
+  #main-header-fixed #menu-toggle {
+    padding: 0.5rem 0.7rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #main-header-fixed {
+    padding: 0.5rem 0.6rem;
+    height: 55px;
+  }
+  
+  #main-scroll-container {
+    top: 55px;
+    bottom: 50px;
+  }
+  
+  #main-app {
+    min-height: calc(100vh - 105px); /* 55px header + 50px footer */
+  }
+  
+  #main-header-fixed h1 {
+    font-size: 1.2rem;
+  }
+  
+  #main-header-fixed img {
+    max-width: 30px;
+    width: 30px;
+  }
+}
+
+/* Contenedor principal sin scroll */
+#main-scroll-container {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  overflow: hidden; /* Sin scroll en el contenedor principal */
+  z-index: 1000;
+  background: #f4f8f9;
+}
+
+/* Ya no necesitamos scrollbar para el contenedor principal */
+
+/* Ajustar el main app para el nuevo contenedor */
+#main-app {
+  padding: 1rem;
+  min-height: calc(100vh - 120px); /* 70px header + 50px footer */
+}
+
+/* Estilos para el formulario de importes */
+#importe-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,123,255,0.1);
+}
+
+#importe-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 1rem;
+  font-size: 1.2rem;
+  text-align: center;
+  border: 2px solid #e3eafc;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+#importe-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+  outline: none;
+}
+
+#importe-form button[type="submit"] {
+  width: 100%;
+  max-width: 300px;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+}
+
+#importe-form button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,123,255,0.4);
+}
+
+#importe-form button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* Responsive para el formulario de importes */
+@media (max-width: 768px) {
+  #importe-form {
+    max-width: 90%;
+    margin: 1.5rem auto;
+    padding: 1.2rem;
+  }
+  
+  #importe-input {
+    font-size: 1.1rem;
+    padding: 0.9rem;
+  }
+  
+  #importe-form button[type="submit"] {
+    font-size: 1.1rem;
+    padding: 0.9rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #importe-form {
+    max-width: 95%;
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+  
+  #importe-input {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+  
+  #importe-form button[type="submit"] {
+    font-size: 1rem;
+    padding: 0.8rem 1.2rem;
+  }
+}
+
+/* Modo dark para el formulario de importes */
+body.dark-mode #importe-form {
+  background: #23272f;
+  box-shadow: 0 4px 15px rgba(144,202,249,0.15);
+}
+
+body.dark-mode #importe-input {
+  background: #2c3e50;
+  color: #e0e0e0;
+  border-color: #5a6c7d;
+}
+
+body.dark-mode #importe-input:focus {
+  border-color: #90caf9;
+  box-shadow: 0 0 0 3px rgba(144,202,249,0.2);
+}
+
+body.dark-mode #importe-input::placeholder {
+  color: #bdbdbd;
+}
+
+body.dark-mode #importe-form button[type="submit"] {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  box-shadow: 0 4px 12px rgba(144,202,249,0.2);
+}
+
+body.dark-mode #importe-form button[type="submit"]:hover {
+  box-shadow: 0 6px 18px rgba(144,202,249,0.3);
+}
+
+/* Modo dark para el contenedor principal */
+body.dark-mode #main-scroll-container {
+  background: #181c22;
+}
+
+/* Estilos mejorados para el sidebar sin logo */
+#drawer-sidebar h2:first-of-type {
+  color: #007bff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 2rem 0;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid #e3eafc;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Modo dark para el título del sidebar */
+body.dark-mode #drawer-sidebar h2:first-of-type {
+  color: #90caf9;
+  border-bottom-color: #444;
+}
+
+/* Ajustar el espaciado del sidebar */
+#drawer-sidebar > div:first-child {
+  margin-bottom: 2.5rem;
+  margin-top: 1.5rem;
 }
 
 

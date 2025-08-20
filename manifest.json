@@ -1,9 +1,9 @@
 {
   "name": "Importes Diarios",
-  "short_name": "Contro Choferes",
+  "short_name": "Control Choferes",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#f4f4f4",
+  "background_color": "#FF7F50",
   "theme_color": "#007bff",
   "description": "App para registrar importes diarios.",
   "icons": [
