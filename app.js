@@ -941,11 +941,17 @@ if (btnConsultaDiaUnica) {
       return añoTurno === añoSeleccionado && mesTurno === mesSeleccionado && diaTurno === diaSeleccionado;
     });
     if (turnos.length === 0) {
+      // Crear fecha para el mensaje usando la misma lógica de zona horaria
+      const fechaMensaje = new Date(fecha + 'T12:00:00');
+      const diaMensaje = fechaMensaje.getDate();
+      const mesMensaje = fechaMensaje.getMonth();
+      const añoMensaje = fechaMensaje.getFullYear();
+      
       mostrarResultadoConsulta(`
         <div style='text-align:center;padding:3rem 1rem;color:#666;'>
           <div style='font-size:4rem;margin-bottom:1rem;'>🔍</div>
           <h3 style='margin:0 0 0.5rem 0;color:#333;font-size:1.4rem;'>No hay turnos para esa fecha</h3>
-          <p style='margin:0;font-size:1.1rem;'>No se encontraron turnos registrados para el ${new Date(fecha).toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          <p style='margin:0;font-size:1.1rem;'>No se encontraron turnos registrados para el ${diaMensaje} de ${fechaMensaje.toLocaleDateString('es-AR', { month: 'long' })} de ${añoMensaje}</p>
         </div>
       `);
       return;
@@ -999,11 +1005,23 @@ if (btnConsultaRango) {
       return fechaTurnoComparable >= fechaDesdeComparable && fechaTurnoComparable <= fechaHastaComparable;
     });
     if (turnos.length === 0) {
+      // Crear fechas para el mensaje usando la misma lógica de zona horaria
+      const fechaDesdeMensaje = new Date(desde + 'T12:00:00');
+      const fechaHastaMensaje = new Date(hasta + 'T12:00:00');
+      
+      const diaDesdeMensaje = fechaDesdeMensaje.getDate();
+      const mesDesdeMensaje = fechaDesdeMensaje.getMonth();
+      const añoDesdeMensaje = fechaDesdeMensaje.getFullYear();
+      
+      const diaHastaMensaje = fechaHastaMensaje.getDate();
+      const mesHastaMensaje = fechaHastaMensaje.getMonth();
+      const añoHastaMensaje = fechaHastaMensaje.getFullYear();
+      
       mostrarResultadoConsulta(`
         <div style='text-align:center;padding:3rem 1rem;color:#666;'>
           <div style='font-size:4rem;margin-bottom:1rem;'>🔍</div>
           <h3 style='margin:0 0 0.5rem 0;color:#333;font-size:1.4rem;'>No hay turnos en ese rango</h3>
-          <p style='margin:0;font-size:1.1rem;'>No se encontraron turnos entre el ${new Date(desde).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })} y el ${new Date(hasta).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          <p style='margin:0;font-size:1.1rem;'>No se encontraron turnos entre el ${diaDesdeMensaje} de ${fechaDesdeMensaje.toLocaleDateString('es-AR', { month: 'long' })} y el ${diaHastaMensaje} de ${fechaHastaMensaje.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}</p>
         </div>
       `);
       return;
