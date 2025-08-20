@@ -14,6 +14,28 @@ function mostrarAuth(showLogin = true) {
   if (authTitle) authTitle.textContent = showLogin ? 'Iniciar sesión' : 'Registrarse';
   if (toggleBtn) toggleBtn.textContent = showLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión';
   if (msg) msg.textContent = '';
+  // Forzar modo claro en login/registro
+  document.body.classList.remove('dark-mode');
+  const switchDark = document.getElementById('switch-dark');
+  const labelDark = document.getElementById('icon-dark-label');
+  if (switchDark) switchDark.checked = false;
+  if (labelDark) labelDark.textContent = '🌙';
+  // Cerrar drawer y overlay
+  const drawer = document.getElementById('drawer-sidebar');
+  const overlay = document.getElementById('drawer-overlay');
+  if (drawer) {
+    drawer.classList.remove('drawer-visible');
+    drawer.classList.add('drawer-oculto');
+    drawer.style.display = '';
+  }
+  if (overlay) {
+    overlay.classList.remove('drawer-overlay-visible');
+    overlay.classList.add('drawer-overlay-oculto');
+    overlay.style.display = 'none';
+  }
+  // Mostrar footer
+  const footer = document.getElementById('footer-app');
+  if (footer) footer.style.display = '';
 }
 function ocultarAuth() {
   const auth = document.getElementById('auth-container');
@@ -34,11 +56,38 @@ function cerrarSesion() {
 }
 function mostrarApp() {
   const mainApp = document.getElementById('main-app');
-  const sidebar = document.getElementById('sidebar');
+  const drawer = document.getElementById('drawer-sidebar');
   const menuToggle = document.getElementById('menu-toggle');
+  const overlay = document.getElementById('drawer-overlay');
   if (mainApp) mainApp.style.display = '';
-  if (sidebar) sidebar.style.display = '';
+  if (drawer) {
+    drawer.style.display = '';
+    drawer.classList.remove('drawer-visible');
+    drawer.classList.add('drawer-oculto');
+  }
   if (menuToggle) menuToggle.style.display = '';
+  if (overlay) {
+    overlay.classList.remove('drawer-overlay-visible');
+    overlay.classList.add('drawer-overlay-oculto');
+    overlay.style.display = 'none';
+  }
+  // Restaurar modo dark si estaba activado
+  const dark = localStorage.getItem('modo-dark') === '1';
+  document.body.classList.toggle('dark-mode', dark);
+  const switchDark = document.getElementById('switch-dark');
+  const labelDark = document.getElementById('icon-dark-label');
+  if (switchDark) switchDark.checked = dark;
+  if (labelDark) labelDark.textContent = dark ? '☀️' : '🌙';
+  // Ocultar footer
+  const footer = document.getElementById('footer-app');
+  if (footer) footer.style.display = 'none';
+  // Si no hay turno activo, mostrar pantalla de últimos turnos
+  if (!getTurnoActivo()) {
+    mostrarPantallaUltimosTurnos();
+    return;
+  }
+  // Si hay turno activo, render normal
+  render();
 }
 function ocultarApp() {
   const mainApp = document.getElementById('main-app');
@@ -50,6 +99,10 @@ function ocultarApp() {
 }
 // --- Eventos de login/registro ---
 window.addEventListener('DOMContentLoaded', function() {
+  const menuToggle = document.getElementById('menu-toggle');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const btnLogout = document.getElementById('btn-logout');
   // Mostrar login si no hay usuario
   if (!usuarioLogueado()) {
     ocultarApp();
@@ -121,7 +174,6 @@ window.addEventListener('DOMContentLoaded', function() {
     };
   }
   // Botón cerrar sesión en el sidebar
-  const btnLogout = document.getElementById('btn-logout');
   if (btnLogout) {
     btnLogout.onclick = function() {
       if (getTurnoActivo()) {
@@ -205,6 +257,14 @@ function iniciarTurno() {
     importes: []
   });
   saveTurnos(turnos);
+  // Ocultar pantalla de últimos turnos y footer
+  const consultaDiv = document.getElementById('consulta-principal');
+  const footer = document.getElementById('footer-app');
+  if (consultaDiv) consultaDiv.style.display = 'none';
+  if (footer) footer.style.display = 'none';
+  // Mostrar pantalla principal
+  const mainHeader = document.getElementById('main-header-fijo');
+  if (mainHeader) mainHeader.style.display = '';
   render();
 }
 
@@ -216,6 +276,7 @@ function finalizarTurno() {
     saveTurnos(turnos);
   }
   render();
+  mostrarPantallaUltimosTurnos();
 }
 
 function agregarImporteATurno(valor, tipo = 'Efectivo') {
@@ -223,7 +284,9 @@ function agregarImporteATurno(valor, tipo = 'Efectivo') {
   const idx = turnos.findIndex(t => !t.fin);
   if (idx !== -1) {
     const ahora = new Date();
-    turnos[idx].importes.push({ valor, hora: ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), tipo });
+    // Hora en formato 24hs, HH:mm:ss
+    const hora24 = ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    turnos[idx].importes.push({ valor, hora: hora24, tipo });
     saveTurnos(turnos);
   }
 }
@@ -233,7 +296,7 @@ function renderEstadoTurno() {
   const turno = getTurnoActivo();
   if (turno) {
     const inicio = new Date(turno.inicio);
-    estadoDiv.innerHTML = `<b>Turno en curso:</b> ${inicio.toLocaleString('es-AR')}`;
+    estadoDiv.innerHTML = `<b>Turno en curso:</b> ${inicio.toLocaleString('es-AR', { hour12: false })}`;
   } else {
     estadoDiv.innerHTML = '<b>No hay turno iniciado.</b>';
   }
@@ -251,20 +314,24 @@ function render() {
   const btnIniciar = document.getElementById('iniciar-turno');
 
   if (turno) {
-    form.style.display = '';
-    resumen.style.display = '';
-    lista.style.display = '';
-    btnFinalizar.style.display = 'block';
-    tablaTurnos.innerHTML = '';
+    if (form) form.style.display = '';
+    if (resumen) resumen.style.display = '';
+    if (lista) lista.style.display = '';
+    if (btnFinalizar) btnFinalizar.style.display = 'block';
+    if (tablaTurnos) tablaTurnos.innerHTML = '';
     if (btnIniciar) btnIniciar.style.display = 'none';
     // Render importes
-    lista.innerHTML = '';
+    if (lista) lista.innerHTML = '';
     let total = 0;
     let importes = turno.importes;
     importes.slice().reverse().forEach((imp, idx) => {
       total += (typeof imp === 'object' ? imp.valor : imp);
       const li = document.createElement('li');
       if (typeof imp === 'object') {
+        let clase = '';
+        if ((imp.tipo || '').toLowerCase() === 'vale') clase = 'importe-vale';
+        if ((imp.tipo || '').toLowerCase() === 'transferencia') clase = 'importe-transferencia';
+        li.className = clase;
         li.innerHTML = `<span class='hora-importe'>${imp.hora}</span><span class='valor-importe'>$${imp.valor.toFixed(2)}</span><span class='tipo-importe'>${imp.tipo || 'Efectivo'}</span>`;
       } else {
         li.textContent = `$${imp.toFixed(2)}`;
@@ -282,17 +349,17 @@ function render() {
     document.getElementById('importe-input').disabled = false;
     document.querySelector('form button[type="submit"]').disabled = false;
   } else {
-    form.style.display = 'none';
-    resumen.style.display = 'none';
-    lista.style.display = 'none';
-    btnFinalizar.style.display = 'none';
+    if (form) form.style.display = 'none';
+    if (resumen) resumen.style.display = 'none';
+    if (lista) lista.style.display = 'none';
+    if (btnFinalizar) btnFinalizar.style.display = 'none';
     if (btnIniciar) btnIniciar.style.display = 'block';
     // Mover la tabla justo debajo del botón Iniciar Turno
-    headerFijo.appendChild(tablaTurnos);
+    if (headerFijo && tablaTurnos) headerFijo.appendChild(tablaTurnos);
     renderTablaTurnosRecientes();
   }
   // Si hay turno activo, la tabla vuelve a su lugar original
-  if (turno) {
+  if (turno && tablaTurnos) {
     document.querySelector('main').appendChild(tablaTurnos);
   }
 }
@@ -305,14 +372,16 @@ function editarImporteInline(idx, imp) {
   li.classList.add('editando');
   const valorOriginal = typeof imp === 'object' ? imp.valor : imp;
   const tipoOriginal = (typeof imp === 'object' && imp.tipo) ? imp.tipo : 'Efectivo';
-  li.innerHTML = `<input type='number' id='edit-importe' value='${valorOriginal}' style='width:100%;height:2.5rem;font-size:1.15rem;text-align:right;margin-bottom:0.5rem;'>
-    <select id='edit-tipo' style='width:100%;height:2.5rem;font-size:1.15rem;margin-bottom:0.5rem;'>
+  li.innerHTML = `<input type='number' id='edit-importe' value='${valorOriginal}' style='width:100%;height:2.5rem;font-size:1.08rem;text-align:right;margin-bottom:0.3rem;'>
+    <select id='edit-tipo' style='width:100%;height:2.5rem;font-size:1.08rem;margin-bottom:0.3rem;'>
       <option value='Efectivo' ${tipoOriginal==='Efectivo'?'selected':''}>Efectivo</option>
       <option value='Transferencia' ${tipoOriginal==='Transferencia'?'selected':''}>Transferencia</option>
       <option value='Vale' ${tipoOriginal==='Vale'?'selected':''}>Vale</option>
     </select>
-    <button id='guardar-edit' style='width:100%;background:#43a047;color:#fff;border:none;border-radius:6px;padding:0.7rem 0;font-size:1.15rem;margin-bottom:0.3rem;'>✔ Guardar</button>
-    <button id='cancelar-edit' style='width:100%;background:#ff5252;color:#fff;border:none;border-radius:6px;padding:0.7rem 0;font-size:1.15rem;'>✖ Cancelar</button>`;
+    <div class='edit-buttons'>
+      <button id='guardar-edit' style='background:#43a047;color:#fff;border:none;border-radius:6px;padding:0.6rem 0.2rem;font-size:1.05rem;'>✔ Guardar</button>
+      <button id='cancelar-edit' style='background:#ff5252;color:#fff;border:none;border-radius:6px;padding:0.6rem 0.2rem;font-size:1.05rem;'>✖ Cancelar</button>
+    </div>`;
   const input = li.querySelector('#edit-importe');
   const select = li.querySelector('#edit-tipo');
   input.addEventListener('click', function(e) { e.stopPropagation(); });
@@ -375,8 +444,8 @@ function renderTablaTurnosRecientes() {
     const cantidad = t.importes.length;
     const total = t.importes.reduce((a, b) => a + (typeof b === 'object' ? b.valor : b), 0);
     html += `<tr>
-      <td data-label="Inicio">${inicioDate.toLocaleString('es-AR')}</td>
-      <td data-label="Fin">${finDate ? finDate.toLocaleString('es-AR') : '-'}</td>
+      <td data-label="Inicio">${inicioDate.toLocaleString('es-AR', { hour12: false })}</td>
+      <td data-label="Fin">${finDate ? finDate.toLocaleString('es-AR', { hour12: false }) : '-'}</td>
       <td data-label="Viajes">${cantidad}</td>
       <td data-label="Total" class="importe-turno">$${formatearImporte(total)}</td>
     </tr>`;
@@ -634,6 +703,8 @@ function mostrarResultadoConsulta(html) {
         generarPDFConsulta();
       });
     }
+    const footer = document.getElementById('footer-app');
+    if (footer) footer.style.display = '';
   }
 }
 
@@ -710,20 +781,57 @@ function mostrarTurnosRecientes() {
         </tr>
       </thead>
       <tbody>`;
-  turnos.reverse().forEach((t) => {
+  turnos.slice().reverse().forEach((t, idx) => {
     const inicioDate = new Date(t.inicio);
     const finDate = t.fin ? new Date(t.fin) : null;
     const cantidad = t.importes.length;
     const total = t.importes.reduce((a, b) => a + (typeof b === 'object' ? b.valor : b), 0);
-    html += `<tr>
-      <td style="padding:6px;border:1px solid #ccc;">${inicioDate.toLocaleString('es-AR')}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${finDate ? finDate.toLocaleString('es-AR') : '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${cantidad}</td>
-      <td style="padding:6px;border:1px solid #ccc;text-align:right;">$${formatearImporte(total)}</td>
+    html += `<tr class="turno-row" data-turno-idx="${turnos.length - 1 - idx}">
+      <td>${inicioDate.toLocaleString('es-AR')}</td>
+      <td>${finDate ? finDate.toLocaleString('es-AR') : '-'}</td>
+      <td>${cantidad}</td>
+      <td style="text-align:right;">$${formatearImporte(total)}</td>
     </tr>`;
   });
   html += '</tbody></table></div>';
   mostrarResultadoConsulta(html);
+
+  // Agrego listeners a las filas para mostrar detalle
+  setTimeout(() => {
+    document.querySelectorAll('.turno-row').forEach(row => {
+      row.addEventListener('click', function() {
+        const idx = parseInt(this.getAttribute('data-turno-idx'));
+        mostrarDetalleTurno(turnos[idx]);
+      });
+    });
+  }, 0);
+}
+
+function mostrarDetalleTurno(turno) {
+  if (!turno) return;
+  const inicioDate = new Date(turno.inicio);
+  const finDate = turno.fin ? new Date(turno.fin) : null;
+  let html = `<div style='margin-bottom:1.2rem;'>
+    <b>Turno:</b> ${inicioDate.toLocaleString('es-AR')}<br>`;
+  if (finDate) html += `<b>Fin:</b> ${finDate.toLocaleString('es-AR')}<br>`;
+  html += `<b>Viajes:</b> ${turno.importes.length}<br><b>Total:</b> $${formatearImporte(turno.importes.reduce((a, b) => a + (typeof b === 'object' ? b.valor : b), 0))}
+    </div>`;
+  html += `<table style='width:100%;border-collapse:collapse;text-align:center;'>
+    <thead><tr style='background:#f0f8ff;'><th>Hora</th><th>Importe</th><th>Tipo</th></tr></thead><tbody>`;
+  turno.importes.forEach(imp => {
+    html += `<tr>
+      <td>${imp.hora || '-'}</td>
+      <td style='text-align:right;'>$${formatearImporte(imp.valor)}</td>
+      <td>${imp.tipo || 'Efectivo'}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  html += `<div style='margin-top:1.5rem;text-align:center;'><button id='volver-turnos' style='padding:0.7rem 1.5rem;background:#007bff;color:#fff;border:none;border-radius:4px;font-size:1.1rem;cursor:pointer;'>Volver a turnos</button></div>`;
+  mostrarResultadoConsulta(html);
+  setTimeout(() => {
+    const volverBtn = document.getElementById('volver-turnos');
+    if (volverBtn) volverBtn.onclick = mostrarTurnosRecientes;
+  }, 0);
 }
 
 // Botón Ver Turnos en el sidebar
@@ -753,6 +861,12 @@ function aplicarModoDark() {
   document.body.classList.toggle('dark-mode', dark);
   const switchDark = document.getElementById('switch-dark');
   if (switchDark) switchDark.checked = dark;
+}
+
+function actualizarLabelModoDark() {
+  const label = document.querySelector('label[for="switch-dark"]');
+  const dark = localStorage.getItem('modo-dark') === '1';
+  if (label) label.textContent = dark ? '☀️ Modo claro' : '🌙 Modo oscuro';
 }
 
 // Backup y restaurar datos (ajustar para usuario)
@@ -793,49 +907,90 @@ function restaurarBackup(archivo) {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-  // cargarTurnosPrueba(); // <-- Comentado para no borrar ni sobreescribir datos reales
-  renderFecha();
-  render();
-  aplicarModoDark();
-  // Switch dark/white
-  const switchDark = document.getElementById('switch-dark');
-  if (switchDark) {
-    switchDark.addEventListener('change', function() {
-      localStorage.setItem('modo-dark', switchDark.checked ? '1' : '0');
-      aplicarModoDark();
-    });
-  }
-
-  // Sidebar menú oculto en móvil
   const menuToggle = document.getElementById('menu-toggle');
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
+  const drawer = document.getElementById('drawer-sidebar');
+  const overlay = document.getElementById('drawer-overlay');
+  const switchDark = document.getElementById('switch-dark');
+  const labelDark = document.getElementById('icon-dark-label');
 
-  function abrirSidebar() {
-    if (sidebar && overlay) {
-      sidebar.classList.remove('sidebar-oculto');
-      sidebar.classList.add('sidebar-visible');
-      overlay.classList.remove('sidebar-overlay-oculto');
-      overlay.classList.add('sidebar-overlay-visible');
+  function openDrawer() {
+    if (drawer && overlay) {
+      drawer.classList.remove('drawer-oculto');
+      drawer.classList.add('drawer-visible');
+      overlay.classList.remove('drawer-overlay-oculto');
+      overlay.classList.add('drawer-overlay-visible');
       document.body.style.overflow = 'hidden';
     }
   }
-
-  function cerrarSidebar() {
-    if (sidebar && overlay) {
-      sidebar.classList.remove('sidebar-visible');
-      sidebar.classList.add('sidebar-oculto');
-      overlay.classList.remove('sidebar-overlay-visible');
-      overlay.classList.add('sidebar-overlay-oculto');
+  function closeDrawer() {
+    if (drawer && overlay) {
+      drawer.classList.remove('drawer-visible');
+      drawer.classList.add('drawer-oculto');
+      overlay.classList.remove('drawer-overlay-visible');
+      overlay.classList.add('drawer-overlay-oculto');
       document.body.style.overflow = '';
     }
   }
-
-  if (menuToggle && sidebar && overlay) {
-    menuToggle.addEventListener('click', abrirSidebar);
-    overlay.addEventListener('click', cerrarSidebar);
+  function setDarkMode(dark) {
+    document.body.classList.toggle('dark-mode', dark);
+    if (switchDark) switchDark.checked = dark;
+    if (labelDark) labelDark.textContent = dark ? '☀️' : '🌙';
   }
-
+  function getDarkMode() {
+    return localStorage.getItem('modo-dark') === '1';
+  }
+  // Inicializar modo
+  setDarkMode(getDarkMode());
+  // Cambiar modo al usar el switch
+  if (switchDark) {
+    switchDark.addEventListener('change', function() {
+      localStorage.setItem('modo-dark', switchDark.checked ? '1' : '0');
+      setDarkMode(switchDark.checked);
+    });
+  }
+  // Cambiar modo al tocar el icono
+  if (labelDark) {
+    labelDark.addEventListener('click', function() {
+      const newMode = !getDarkMode();
+      localStorage.setItem('modo-dark', newMode ? '1' : '0');
+      setDarkMode(newMode);
+      if (switchDark) {
+        switchDark.checked = newMode;
+        switchDark.dispatchEvent(new Event('change'));
+      }
+    });
+  }
+  if (menuToggle && drawer && overlay) {
+    menuToggle.onclick = function(e) {
+      e.stopPropagation();
+      if (drawer.classList.contains('drawer-visible')) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    };
+    overlay.onclick = function() {
+      closeDrawer();
+    };
+    document.addEventListener('pointerdown', function(e) {
+      if (
+        drawer &&
+        drawer.classList.contains('drawer-visible') &&
+        !drawer.contains(e.target) &&
+        e.target !== menuToggle
+      ) {
+        closeDrawer();
+      }
+    });
+  }
+  // Listener cerrar sesión (siempre activo)
+  if (btnLogout) {
+    btnLogout.onclick = function() {
+      cerrarSesion();
+      closeDrawer();
+    };
+    btnLogout.style.zIndex = 4000;
+  }
   // Backup/restore listeners
   const btnBackup = document.getElementById('btn-backup');
   if (btnBackup) {
@@ -850,10 +1005,14 @@ window.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  // Botón cerrar sesión al final del sidebar
-  let btnLogout = document.getElementById('btn-logout');
-  if (btnLogout) {
-    btnLogout.onclick = cerrarSesion;
+  // Refuerzo: sidebar y overlay ocultos al cargar
+  if (drawer) {
+    drawer.classList.remove('drawer-visible');
+    drawer.classList.add('drawer-oculto');
+  }
+  if (overlay) {
+    overlay.classList.remove('drawer-overlay-visible');
+    overlay.classList.add('drawer-overlay-oculto');
   }
 });
 
@@ -862,4 +1021,61 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('service-worker.js');
   });
+}
+
+function mostrarPantallaUltimosTurnos() {
+  const mainHeader = document.getElementById('main-header-fijo');
+  const mainApp = document.getElementById('main-app');
+  const consultaDiv = document.getElementById('consulta-principal');
+  const btnFinalizar = document.getElementById('finalizar-dia');
+  const tablaTurnos = document.getElementById('tabla-turnos-recientes-container');
+  const footer = document.getElementById('footer-app');
+  // Oculto todo lo que no corresponde
+  if (mainHeader) mainHeader.style.display = 'none';
+  if (mainApp) mainApp.style.display = '';
+  if (btnFinalizar) btnFinalizar.style.display = 'none';
+  if (tablaTurnos) tablaTurnos.style.display = 'none';
+  if (footer) footer.style.display = '';
+  // Título y botón iniciar turno fijos
+  let html = `<div id='ultimos-turnos-header' style='background:#fff;padding:1.2rem 1rem 1.2rem 1rem;border-radius:14px 14px 0 0;box-shadow:0 2px 12px rgba(0,123,255,0.07);max-width:480px;margin:2.2rem auto 0 auto;position:sticky;top:0;z-index:10;'>
+    <h2 style='text-align:center;color:#007bff;margin-top:0;margin-bottom:1.1rem;font-size:2rem;'>Últimos turnos</h2>
+    <div style='text-align:center;'>
+      <button id='btn-iniciar-turno-ultimos' style='padding:1rem 2.2rem;background:#388e3c;color:#fff;border:none;border-radius:8px;font-size:1.18rem;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,0.10);cursor:pointer;'>Iniciar Turno</button>
+    </div>
+  </div>`;
+  // Lista de últimos 7 turnos con scroll
+  html += `<div id='ultimos-turnos-scroll' style='max-height:340px;overflow-y:auto;background:#fff;padding:0 1rem 1.2rem 1rem;border-radius:0 0 14px 14px;box-shadow:0 2px 12px rgba(0,123,255,0.07);max-width:480px;margin:0 auto 1.2rem auto;'>`;
+  const turnos = getTurnos().filter(t => t.fin).slice(-7).reverse();
+  if (turnos.length === 0) {
+    html += `<div style='text-align:center;color:#888;font-size:1.1rem;'>No hay turnos finalizados.</div>`;
+  } else {
+    html += `<div style='display:flex;flex-direction:column;gap:1.1rem;'>`;
+    turnos.forEach((t, idx) => {
+      const inicioDate = new Date(t.inicio);
+      const finDate = t.fin ? new Date(t.fin) : null;
+      const cantidad = t.importes.length;
+      const total = t.importes.reduce((a, b) => a + (typeof b === 'object' ? b.valor : b), 0);
+      html += `<div class='etiqueta-turno' data-turno-idx='${getTurnos().indexOf(t)}' style='background:#f4f8ff;border-radius:8px;padding:0.9rem 1.1rem;box-shadow:0 1px 4px rgba(0,123,255,0.04);cursor:pointer;transition:box-shadow 0.15s;'>
+        <b>Inicio:</b> ${inicioDate.toLocaleString('es-AR')}<br>
+        <b>Fin:</b> ${finDate ? finDate.toLocaleString('es-AR') : '-'}<br>
+        <b>Viajes:</b> ${cantidad} &nbsp; <b>Total:</b> $${formatearImporte(total)}
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  html += `</div>`;
+  if (consultaDiv) {
+    consultaDiv.innerHTML = html;
+    consultaDiv.style.display = '';
+  }
+  setTimeout(() => {
+    const btnIniciar = document.getElementById('btn-iniciar-turno-ultimos');
+    if (btnIniciar) btnIniciar.onclick = iniciarTurno;
+    document.querySelectorAll('.etiqueta-turno').forEach(div => {
+      div.addEventListener('click', function() {
+        const idx = parseInt(this.getAttribute('data-turno-idx'));
+        mostrarDetalleTurno(getTurnos()[idx]);
+      });
+    });
+  }, 0);
 }

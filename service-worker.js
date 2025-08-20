@@ -5,14 +5,18 @@ const urlsToCache = [
   '/styles.css',
   '/app.js',
   '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/logo.svg'
+  // '/icon-192.png', // Elimino porque puede no existir
+  // '/icon-512.png'  // Elimino porque puede no existir
 ];
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
+      .catch(err => {
+        console.error('Error cacheando archivos:', err);
+      })
   );
 });
 

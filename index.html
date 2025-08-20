@@ -7,6 +7,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="auth-container" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999;background:linear-gradient(135deg,%23e3f2fd 0%%,%23bbdefb 100%%);align-items:center;justify-content:center;">
@@ -31,14 +32,14 @@
     </div>
   </div>
   <button id="menu-toggle" aria-label="Abrir menú">☰</button>
-  <div id="sidebar" class="sidebar-oculto">
-    <div style="width:100%;display:flex;justify-content:center;align-items:center;margin-bottom:1.2rem;margin-top:-0.5rem;">
+  <div id="drawer-sidebar" class="sidebar-oculto" style="display:none;">
+    <div style="width:100%;display:flex;align-items:center;justify-content:center;gap:1.2rem;margin-bottom:2.1rem;margin-top:-0.5rem;">
       <img src="logo.svg" alt="Logo Remisero" style="max-width:60px;width:60px;height:auto;display:block;">
+      <section id="modo-dark-toggle" style="display:flex;align-items:center;gap:0.7rem;margin-bottom:0;">
+        <label for="switch-dark" id="icon-dark-label" style="font-size:1.5rem;cursor:pointer;">🌙</label>
+        <input type="checkbox" id="switch-dark" style="width:2rem;height:1.2rem;cursor:pointer;">
+      </section>
     </div>
-    <section id="modo-dark-toggle" style="display:flex;align-items:center;gap:0.7rem;margin-bottom:1.5rem;">
-      <label for="switch-dark" style="font-size:1.1rem;cursor:pointer;">🌙 Modo oscuro</label>
-      <input type="checkbox" id="switch-dark" style="width:2rem;height:1.2rem;cursor:pointer;">
-    </section>
     <section id="consultas">
       <h2>Consultas</h2>
       <div>
@@ -67,7 +68,7 @@
     </section>
     <button id="btn-logout" style="width:100%;margin:2rem 0 3.5rem 0;background:#ff5252;color:#fff;border:none;border-radius:6px;padding:0.7rem 0;font-size:1.1rem;cursor:pointer;z-index:200;">Cerrar sesión</button>
   </div>
-  <div id="sidebar-overlay" class="sidebar-overlay-oculto"></div>
+  <div id="drawer-overlay" class="drawer-overlay-oculto" style="display:none;"></div>
   <main id="main-app">
     <div id="main-header-fijo">
       <h1 id="titulo-app">Control-Choferes</h1>
