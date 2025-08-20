@@ -1404,12 +1404,12 @@ function mostrarTurnosRecientes() {
     const horaFin = finDate ? finDate.toLocaleTimeString('es-AR', { 
       hour: '2-digit', 
       minute: '2-digit' 
-    }) : '-';
-    const horario = `${horaInicio} - ${horaFin}`;
+    }) : '';
+    const horario = horaFin ? `${horaInicio}\n${horaFin}` : horaInicio;
     
     html += `<tr class="turno-row" data-turno-idx="${turnos.length - 1 - idx}" style="cursor:pointer;transition:all 0.2s ease;border-bottom:1px solid #f0f0f0;">
       <td style='padding:1rem 0.8rem;font-weight:500;color:#333;word-wrap:break-word;'>${fecha}</td>
-      <td style='padding:1rem 0.8rem;color:#666;font-size:0.95rem;word-wrap:break-word;'>${horario}</td>
+      <td style='padding:1rem 0.8rem;color:#666;font-size:0.95rem;word-wrap:break-word;white-space:pre-line;line-height:1.2;'>${horario}</td>
       <td style='padding:1rem 0.8rem;color:#007bff;font-weight:600;font-size:1.1rem;'>${cantidad}</td>
       <td style='padding:1rem 0.8rem;color:#43a047;font-weight:700;font-size:1.2rem;text-align:right;'>$${formatearImporte(total)}</td>
     </tr>`;
