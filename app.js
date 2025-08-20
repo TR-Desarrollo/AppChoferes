@@ -302,19 +302,24 @@ function editarImporteInline(idx, imp) {
   const lista = document.getElementById('lista-importes');
   const li = lista.children[lista.children.length - 1 - idx];
   if (!li) return;
+  li.classList.add('editando');
   const valorOriginal = typeof imp === 'object' ? imp.valor : imp;
   const tipoOriginal = (typeof imp === 'object' && imp.tipo) ? imp.tipo : 'Efectivo';
-  li.innerHTML = `<input type='number' id='edit-importe' value='${valorOriginal}' style='width:90px;height:2.2rem;font-size:1.1rem;text-align:right;margin-right:0.5rem;'>
-    <select id='edit-tipo' style='height:2.2rem;font-size:1.1rem;margin-right:0.5rem;'>
+  li.innerHTML = `<input type='number' id='edit-importe' value='${valorOriginal}' style='width:100%;height:2.5rem;font-size:1.15rem;text-align:right;margin-bottom:0.5rem;'>
+    <select id='edit-tipo' style='width:100%;height:2.5rem;font-size:1.15rem;margin-bottom:0.5rem;'>
       <option value='Efectivo' ${tipoOriginal==='Efectivo'?'selected':''}>Efectivo</option>
       <option value='Transferencia' ${tipoOriginal==='Transferencia'?'selected':''}>Transferencia</option>
       <option value='Vale' ${tipoOriginal==='Vale'?'selected':''}>Vale</option>
     </select>
-    <button id='guardar-edit' style='background:#43a047;color:#fff;border:none;border-radius:4px;padding:0.2rem 0.7rem;cursor:pointer;'>✔</button>
-    <button id='cancelar-edit' style='background:#ff5252;color:#fff;border:none;border-radius:4px;padding:0.2rem 0.7rem;cursor:pointer;'>✖</button>`;
+    <button id='guardar-edit' style='width:100%;background:#43a047;color:#fff;border:none;border-radius:6px;padding:0.7rem 0;font-size:1.15rem;margin-bottom:0.3rem;'>✔ Guardar</button>
+    <button id='cancelar-edit' style='width:100%;background:#ff5252;color:#fff;border:none;border-radius:6px;padding:0.7rem 0;font-size:1.15rem;'>✖ Cancelar</button>`;
   const input = li.querySelector('#edit-importe');
   const select = li.querySelector('#edit-tipo');
+  input.addEventListener('click', function(e) { e.stopPropagation(); });
+  select.addEventListener('click', function(e) { e.stopPropagation(); });
+  select.addEventListener('touchstart', function(e) { e.stopPropagation(); });
   input.focus();
+  input.select();
   li.querySelector('#guardar-edit').onclick = function(e) {
     e.stopPropagation();
     const nuevoValor = parseFloat(input.value);
@@ -346,11 +351,13 @@ function editarImporteInline(idx, imp) {
 
 function renderTablaTurnosRecientes() {
   const tablaTurnos = document.getElementById('tabla-turnos-recientes-container');
-  const turnos = getTurnos().filter(t => t.fin);
+  let turnos = getTurnos().filter(t => t.fin);
   if (turnos.length === 0) {
     tablaTurnos.innerHTML = '';
     return;
   }
+  // Mostrar solo los dos turnos más recientes
+  turnos = turnos.slice(-2);
   let html = `<div style='max-height:336px;overflow-y:auto;box-sizing:border-box;'>
     <table style="width:100%;border-collapse:collapse;text-align:center;">
       <thead>
@@ -368,10 +375,10 @@ function renderTablaTurnosRecientes() {
     const cantidad = t.importes.length;
     const total = t.importes.reduce((a, b) => a + (typeof b === 'object' ? b.valor : b), 0);
     html += `<tr>
-      <td style="padding:6px;border:1px solid #ccc;">${inicioDate.toLocaleString('es-AR')}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${finDate ? finDate.toLocaleString('es-AR') : '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${cantidad}</td>
-      <td style="padding:6px;border:1px solid #ccc;text-align:right;">$${formatearImporte(total)}</td>
+      <td data-label="Inicio">${inicioDate.toLocaleString('es-AR')}</td>
+      <td data-label="Fin">${finDate ? finDate.toLocaleString('es-AR') : '-'}</td>
+      <td data-label="Viajes">${cantidad}</td>
+      <td data-label="Total" class="importe-turno">$${formatearImporte(total)}</td>
     </tr>`;
   });
   html += '</tbody></table></div>';

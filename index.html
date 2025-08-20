@@ -6,11 +6,12 @@
   <title>Importes Diarios</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='100%25' height='100%25' fill='%23007bff'/%3E%3Ctext x='50%25' y='58%25' font-size='36' font-family='Arial' fill='white' text-anchor='middle' font-weight='bold'%3ECC%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
 </head>
 <body>
   <div id="auth-container" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999;background:linear-gradient(135deg,%23e3f2fd 0%%,%23bbdefb 100%%);align-items:center;justify-content:center;">
     <div id="auth-box" style="max-width:370px;width:96vw;margin:0 auto;background:#fff;padding:2.2rem 1.5rem 1.7rem 1.5rem;border-radius:18px;box-shadow:0 4px 32px rgba(0,0,0,0.13);text-align:center;">
+      <img src="logo.svg" alt="Logo Remisero" style="display:block;margin:0 auto 1.2rem auto;max-width:90px;width:60%;height:auto;">
       <h2 id="auth-title" style="color:#007bff;font-size:2rem;margin-bottom:1.5rem;letter-spacing:1px;">Iniciar sesión</h2>
       <form id="login-form" style="display:block;">
         <input type="email" id="login-email" placeholder="Email" required style="width:100%;margin-bottom:1rem;padding:1rem 0.9rem;font-size:1.15rem;border:1.5px solid #bdbdbd;border-radius:8px;outline:none;transition:border 0.2s;">
@@ -31,6 +32,9 @@
   </div>
   <button id="menu-toggle" aria-label="Abrir menú">☰</button>
   <div id="sidebar" class="sidebar-oculto">
+    <div style="width:100%;display:flex;justify-content:center;align-items:center;margin-bottom:1.2rem;margin-top:-0.5rem;">
+      <img src="logo.svg" alt="Logo Remisero" style="max-width:60px;width:60px;height:auto;display:block;">
+    </div>
     <section id="modo-dark-toggle" style="display:flex;align-items:center;gap:0.7rem;margin-bottom:1.5rem;">
       <label for="switch-dark" style="font-size:1.1rem;cursor:pointer;">🌙 Modo oscuro</label>
       <input type="checkbox" id="switch-dark" style="width:2rem;height:1.2rem;cursor:pointer;">
