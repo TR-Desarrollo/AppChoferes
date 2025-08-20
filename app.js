@@ -240,6 +240,14 @@ window.addEventListener('DOMContentLoaded', function() {
       mostrarAuth(true);
     };
   }
+  
+  // Botón manual de usuario en el sidebar
+  const btnManual = document.getElementById('btn-manual');
+  if (btnManual) {
+    btnManual.onclick = function() {
+      mostrarManualUsuario();
+    };
+  }
   // Botón cerrar sesión (puedes agregarlo donde quieras)
   const mainHeader = document.getElementById('main-header-fijo');
   if (mainHeader) {
@@ -701,7 +709,7 @@ function mostrarViajesHistoricos(turnos) {
     </div>
     
     <!-- Tabla de viajes con diseño moderno -->
-    <div style='background:#fff;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;margin-bottom:2rem;'>
+    <div id='tabla-consulta-container' style='background:#fff;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;margin-bottom:2rem;'>
       <div style='background:linear-gradient(135deg, #007bff 0%, #0056b3 100%);color:#fff;padding:1.2rem;text-align:center;'>
         <h3 style='margin:0;font-size:1.4rem;font-weight:600;'>🚕 Lista Detallada de Viajes</h3>
       </div>
@@ -709,7 +717,7 @@ function mostrarViajesHistoricos(turnos) {
       <div id='consulta-tabla-scroll' style='max-height:400px;overflow-y:auto;overflow-x:hidden;'>
         <table style='width:100%;border-collapse:separate;border-spacing:0;text-align:center;table-layout:fixed;'>
           <thead>
-            <tr style='background:#f8f9ff;'>
+            <tr style='background:#f8f9ff;position:sticky;top:0;z-index:10;'>
               <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;width:20%;'>N°</th>
               <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;width:30%;'>Fecha</th>
               <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;width:25%;'>Hora</th>
@@ -787,17 +795,55 @@ function mostrarViajesHistoricos(turnos) {
         box-shadow: 0 4px 20px rgba(144,202,249,0.15) !important;
       }
       
+      body.dark-mode #consulta-tabla-scroll table {
+        background: #23272f !important;
+      }
+      
       body.dark-mode #consulta-tabla-scroll thead tr {
         background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%) !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10 !important;
+      }
+      
+      body.dark-mode #consulta-tabla-scroll thead th {
+        color: #ffffff !important;
+        border-bottom-color: #4a90e2 !important;
+      }
+      
+      body.dark-mode #consulta-tabla-scroll tbody tr:nth-child(even) {
+        background: #2c3e50 !important;
+      }
+      
+      body.dark-mode #consulta-tabla-scroll tbody tr:nth-child(odd) {
+        background: #34495e !important;
       }
       
       body.dark-mode #consulta-tabla-scroll tbody tr:hover {
-        background: #2c3e50 !important;
-        box-shadow: 0 2px 8px rgba(144,202,249,0.2) !important;
+        background: #3d5a80 !important;
+        box-shadow: 0 2px 8px rgba(144,202,249,0.3) !important;
       }
       
       body.dark-mode #consulta-tabla-scroll td {
         color: #e0e0e0 !important;
+        border-bottom: 1px solid #4a5568 !important;
+      }
+      
+      body.dark-mode #consulta-tabla-scroll td:first-child {
+        color: #90caf9 !important;
+        font-weight: 600 !important;
+      }
+      
+      body.dark-mode #consulta-tabla-scroll td:last-child {
+        color: #81c784 !important;
+        font-weight: 700 !important;
+      }
+      
+      /* Estilos para el contenedor principal en modo oscuro */
+      body.dark-mode #tabla-consulta-container {
+        background: #23272f !important;
+        box-shadow: 0 4px 20px rgba(144,202,249,0.2) !important;
+        border: 1px solid #4a5568 !important;
       }
       
       /* Responsive design */
@@ -1501,7 +1547,7 @@ function mostrarDetalleTurno(turno) {
       <div style='max-height:400px;overflow-y:auto;overflow-x:hidden;'>
         <table style='width:100%;border-collapse:separate;border-spacing:0;text-align:center;table-layout:fixed;'>
           <thead>
-            <tr style='background:#f8f9ff;'>
+            <tr style='background:#f8f9ff;position:sticky;top:0;z-index:10;'>
               <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:1px solid #e0e0e0;width:30%;'>Hora</th>
               <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:1px solid #e0e0e0;width:40%;'>Importe</th>
               <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:1px solid #e0e0e0;width:30%;'>Tipo</th>
@@ -1572,6 +1618,16 @@ function mostrarDetalleTurno(turno) {
       body.dark-mode .estadisticas-grid > div {
         background: #2c3e50 !important;
         color: #e0e0e0 !important;
+      }
+      
+      /* Estilos para encabezado sticky en modo oscuro */
+      body.dark-mode thead tr {
+        background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%) !important;
+      }
+      
+      body.dark-mode thead th {
+        color: #ffffff !important;
+        border-bottom-color: #4a90e2 !important;
       }
       
       body.dark-mode .estadisticas-grid > div > div:first-child {
@@ -1975,7 +2031,7 @@ function mostrarPantallaUltimosTurnos() {
       
       <!-- Resumen Rápido -->
       <div class='resumen-rapido' style='background:#fff;padding:1.5rem;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,0.08);'>
-        <h3 style='margin:0 0 1rem 0;color:#333;font-size:1.2rem;'>Resumen del Mes</h3>
+        <h3 style='margin:0 0 1rem 0;color:#333;font-size:1.2rem;'>Últimos Turnos</h3>
         <div class='resumen-grid' style='display:grid;grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));gap:1rem;text-align:center;'>
           ${generarResumenRapido()}
         </div>
@@ -2028,6 +2084,161 @@ function generarEstadisticasMes() {
       <div style='font-size:1rem;opacity:0.8;color:#d35400;'>Turnos del Mes</div>
     </div>
   `;
+}
+
+// Función para mostrar el manual de usuario
+function mostrarManualUsuario() {
+  // Cerrar el menú automáticamente
+  cerrarMenu();
+  
+  const consultaDiv = document.getElementById('consulta-principal');
+  if (!consultaDiv) return;
+  
+  let html = `
+    <div style='max-width:800px;margin:0 auto;padding:2rem 1rem;'>
+      <div style='text-align:center;margin-bottom:2rem;'>
+        <h1 style='color:#007bff;margin:0 0 1rem 0;font-size:2.2rem;'>📖 Manual de Usuario</h1>
+        <p style='color:#666;margin:0;font-size:1.1rem;'>Guía completa de la aplicación Control Choferes</p>
+      </div>
+      
+      <div style='background:#fff;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;'>
+        <div style='background:linear-gradient(135deg, #007bff 0%, #0056b3 100%);color:#fff;padding:1.5rem;text-align:center;'>
+          <h2 style='margin:0;font-size:1.5rem;font-weight:600;'>🚗 Control Choferes - Versión 2.0</h2>
+        </div>
+        
+        <div style='padding:2rem;max-height:70vh;overflow-y:auto;'>
+          <div style='margin-bottom:2rem;'>
+            <h3 style='color:#007bff;font-size:1.3rem;margin-bottom:1rem;'>🎯 ¿Qué es la app?</h3>
+            <p style='color:#333;line-height:1.6;margin-bottom:1rem;'>Es una aplicación para remiseros que permite llevar el control de los importes de cada viaje, agrupados por turnos personalizados. Funciona offline y puede instalarse como app nativa.</p>
+          </div>
+          
+          <div style='margin-bottom:2rem;'>
+            <h3 style='color:#007bff;font-size:1.3rem;margin-bottom:1rem;'>📱 Funcionalidades Principales</h3>
+            <ul style='color:#333;line-height:1.6;padding-left:1.5rem;'>
+              <li style='margin-bottom:0.5rem;'><strong>Dashboard:</strong> Estadísticas mensuales y botón para iniciar turnos</li>
+              <li style='margin-bottom:0.5rem;'><strong>Gestión de Turnos:</strong> Iniciar, agregar importes y finalizar turnos</li>
+              <li style='margin-bottom:0.5rem;'><strong>Consultas:</strong> Ver historial, filtrar por fecha o rango</li>
+              <li style='margin-bottom:0.5rem;'><strong>PDFs:</strong> Generar reportes de consultas y turnos específicos</li>
+              <li style='margin-bottom:0.5rem;'><strong>Backup:</strong> Respaldo y restauración de datos</li>
+              <li style='margin-bottom:0.5rem;'><strong>Modo Oscuro:</strong> Tema personalizable para mejor visualización</li>
+            </ul>
+          </div>
+          
+          <div style='margin-bottom:2rem;'>
+            <h3 style='color:#007bff;font-size:1.3rem;margin-bottom:1rem;'>⚡ Uso Rápido</h3>
+            <div style='background:#f8f9ff;padding:1.5rem;border-radius:10px;border-left:4px solid #007bff;'>
+              <ol style='color:#333;line-height:1.6;padding-left:1.5rem;margin:0;'>
+                <li style='margin-bottom:0.5rem;'>Inicia sesión o regístrate</li>
+                <li style='margin-bottom:0.5rem;'>Desde el dashboard, pulsa "Iniciar Turno"</li>
+                <li style='margin-bottom:0.5rem;'>Agrega importes de cada viaje</li>
+                <li style='margin-bottom:0.5rem;'>Finaliza el turno cuando termines</li>
+                <li style='margin-bottom:0.5rem;'>Consulta tu historial desde el menú</li>
+              </ol>
+            </div>
+          </div>
+          
+          <div style='margin-bottom:2rem;'>
+            <h3 style='color:#007bff;font-size:1.3rem;margin-bottom:1rem;'>🔧 Características Técnicas</h3>
+            <div style='display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:1rem;'>
+              <div style='background:#e3f2fd;padding:1rem;border-radius:8px;text-align:center;'>
+                <div style='font-size:1.5rem;margin-bottom:0.5rem;'>📱</div>
+                <div style='font-weight:600;color:#1565c0;'>PWA</div>
+                <div style='font-size:0.9rem;color:#666;'>Instalable como app</div>
+              </div>
+              <div style='background:#e8f5e8;padding:1rem;border-radius:8px;text-align:center;'>
+                <div style='font-size:1.5rem;margin-bottom:0.5rem;'>🌐</div>
+                <div style='font-weight:600;color:#2e7d32;'>Offline</div>
+                <div style='font-size:0.9rem;color:#666;'>Funciona sin internet</div>
+              </div>
+              <div style='background:#fff3e0;padding:1rem;border-radius:8px;text-align:center;'>
+                <div style='font-size:1.5rem;margin-bottom:0.5rem;'>📊</div>
+                <div style='font-weight:600;color:#f57c00;'>PDFs</div>
+                <div style='font-size:0.9rem;color:#666;'>Reportes profesionales</div>
+              </div>
+            </div>
+          </div>
+          
+          <div style='margin-bottom:2rem;'>
+            <h3 style='color:#007bff;font-size:1.3rem;margin-bottom:1rem;'>❓ ¿Necesitas Ayuda?</h3>
+            <p style='color:#333;line-height:1.6;'>Para soporte técnico o sugerencias, contacta al desarrollador desde el pie de la aplicación.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div style='text-align:center;margin-top:2rem;'>
+        <button id='btn-cerrar-manual' style='padding:1rem 2rem;background:linear-gradient(135deg, #6c757d 0%, #5a6268 100%);color:#fff;border:none;border-radius:8px;font-size:1.1rem;font-weight:600;cursor:pointer;box-shadow:0 4px 15px rgba(108,117,125,0.3);transition:all 0.3s ease;'>
+          ✖ Cerrar Manual
+        </button>
+        </div>
+      </div>
+    </div>
+    
+    <style>
+      /* Estilos para el modal del manual */
+      #consulta-principal {
+        background: #f4f8f9;
+      }
+      
+      /* Modo dark para el manual */
+      body.dark-mode #consulta-principal {
+        background: #181c22;
+      }
+      
+      body.dark-mode .manual-container {
+        background: #23272f !important;
+        color: #e0e0e0 !important;
+      }
+      
+      body.dark-mode .manual-container h3 {
+        color: #90caf9 !important;
+      }
+      
+      body.dark-mode .manual-container p,
+      body.dark-mode .manual-container li {
+        color: #e0e0e0 !important;
+      }
+      
+      body.dark-mode .manual-container .feature-card {
+        background: #2c3e50 !important;
+        color: #e0e0e0 !important;
+      }
+      
+      /* Responsive design */
+      @media (max-width: 768px) {
+        .manual-container {
+          padding: 1rem !important;
+        }
+        
+        .manual-container h1 {
+          font-size: 1.8rem !important;
+        }
+        
+        .manual-container h2 {
+          font-size: 1.3rem !important;
+        }
+      }
+    </style>
+  `;
+  
+  consultaDiv.innerHTML = html;
+  consultaDiv.style.display = '';
+  
+  // Event listener para cerrar el manual
+  setTimeout(() => {
+    const btnCerrar = document.getElementById('btn-cerrar-manual');
+    if (btnCerrar) {
+      btnCerrar.onclick = function() {
+        consultaDiv.style.display = 'none';
+        // Volver al dashboard o pantalla anterior
+        const turnoActivo = getTurnoActivo();
+        if (turnoActivo) {
+          mostrarTurnoActivo();
+        } else {
+          mostrarDashboard();
+        }
+      };
+    }
+  }, 0);
 }
 
 // Función para mostrar el turno activo

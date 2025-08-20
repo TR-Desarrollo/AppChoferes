@@ -433,6 +433,17 @@ body.dark-mode #btn-consulta-rango {
 body.dark-mode #sidebar button:hover {
   background: linear-gradient(90deg, #1976d2 0%, #1565c0 100%);
 }
+
+/* Estilos específicos para el botón del manual en modo oscuro */
+body.dark-mode #btn-manual {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%) !important;
+  color: #fff !important;
+}
+
+body.dark-mode #btn-manual:hover {
+  background: linear-gradient(135deg, #f57c00 0%, #ff9800 100%) !important;
+  box-shadow: 0 6px 20px rgba(255,152,0,0.4) !important;
+}
 body.dark-mode #footer-app {
   background: #23272f;
   color: #bdbdbd;
