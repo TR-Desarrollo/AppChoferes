@@ -332,6 +332,19 @@ function iniciarTurno() {
 }
 
 function finalizarTurno() {
+  // Mostrar confirmación antes de finalizar el turno
+  const confirmacion = confirm(
+    '⚠️ ¿Estás seguro que quieres finalizar el turno?\n\n' +
+    '• Esta acción no se puede deshacer\n' +
+    '• El turno se cerrará definitivamente\n' +
+    '• Se guardará en el historial\n\n' +
+    'Si solo querías minimizar la app, presiona "Cancelar"'
+  );
+  
+  if (!confirmacion) {
+    return; // El usuario canceló, no hacer nada
+  }
+  
   const turnos = getTurnos();
   const idx = turnos.findIndex(t => !t.fin);
   if (idx !== -1) {
@@ -1587,9 +1600,9 @@ function mostrarDetalleTurno(turno) {
         <table style='width:100%;border-collapse:separate;border-spacing:0;text-align:center;table-layout:fixed;'>
           <thead>
             <tr style='background:#f8f9ff;position:sticky;top:0;z-index:10;'>
-              <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:1px solid #e0e0e0;width:30%;'>Hora</th>
-              <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:1px solid #e0e0e0;width:40%;'>Importe</th>
-              <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:1px solid #e0e0e0;width:30%;'>Tipo</th>
+              <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:1px solid #e0e0e0;width:25%;'>Hora</th>
+              <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:1px solid #e0e0e0;width:35%;'>Importe</th>
+              <th style='padding:1rem 0.5rem;font-weight:600;color:#333;border-bottom:1px solid #e0e0e0;width:40%;'>Tipo</th>
             </tr>
           </thead>
           <tbody>`;
