@@ -923,15 +923,22 @@ if (btnConsultaDiaUnica) {
       `);
       return;
     }
-    // Filtrar turnos por fecha exacta, considerando zonas horarias
+    // Filtrar turnos por fecha exacta, usando comparación local
     const turnos = getTurnos().filter(t => {
       const fechaTurno = new Date(t.inicio);
-      const fechaSeleccionada = new Date(fecha + 'T00:00:00');
-      const fechaTurnoLocal = fechaTurno.toISOString().split('T')[0];
-      const fechaSeleccionadaLocal = fechaSeleccionada.toISOString().split('T')[0];
+      const fechaSeleccionada = new Date(fecha + 'T12:00:00'); // Usar mediodía para evitar problemas de zona horaria
       
-      console.log(`Comparando: ${fechaTurnoLocal} con ${fechaSeleccionadaLocal}`);
-      return fechaTurnoLocal === fechaSeleccionadaLocal;
+      // Comparar solo año, mes y día en zona horaria local
+      const añoTurno = fechaTurno.getFullYear();
+      const mesTurno = fechaTurno.getMonth();
+      const diaTurno = fechaTurno.getDate();
+      
+      const añoSeleccionado = fechaSeleccionada.getFullYear();
+      const mesSeleccionado = fechaSeleccionada.getMonth();
+      const diaSeleccionado = fechaSeleccionada.getDate();
+      
+      console.log(`Comparando: ${diaTurno}/${mesTurno + 1}/${añoTurno} con ${diaSeleccionado}/${mesSeleccionado + 1}/${añoSeleccionado}`);
+      return añoTurno === añoSeleccionado && mesTurno === mesSeleccionado && diaTurno === diaSeleccionado;
     });
     if (turnos.length === 0) {
       mostrarResultadoConsulta(`
@@ -964,18 +971,32 @@ if (btnConsultaRango) {
       `);
       return;
     }
-    // Filtrar turnos por rango de fechas, considerando zonas horarias
+    // Filtrar turnos por rango de fechas, usando comparación local
     const turnos = getTurnos().filter(t => {
       const fechaTurno = new Date(t.inicio);
-      const fechaDesde = new Date(desde + 'T00:00:00');
-      const fechaHasta = new Date(hasta + 'T23:59:59');
+      const fechaDesde = new Date(desde + 'T12:00:00'); // Usar mediodía para evitar problemas de zona horaria
+      const fechaHasta = new Date(hasta + 'T12:00:00'); // Usar mediodía para evitar problemas de zona horaria
       
-      const fechaTurnoLocal = fechaTurno.toISOString().split('T')[0];
-      const fechaDesdeLocal = fechaDesde.toISOString().split('T')[0];
-      const fechaHastaLocal = fechaHasta.toISOString().split('T')[0];
+      // Comparar solo año, mes y día en zona horaria local
+      const añoTurno = fechaTurno.getFullYear();
+      const mesTurno = fechaTurno.getMonth();
+      const diaTurno = fechaTurno.getDate();
       
-      console.log(`Rango: ${fechaTurnoLocal} entre ${fechaDesdeLocal} y ${fechaHastaLocal}`);
-      return fechaTurnoLocal >= fechaDesdeLocal && fechaTurnoLocal <= fechaHastaLocal;
+      const añoDesde = fechaDesde.getFullYear();
+      const mesDesde = fechaDesde.getMonth();
+      const diaDesde = fechaDesde.getDate();
+      
+      const añoHasta = fechaHasta.getFullYear();
+      const mesHasta = fechaHasta.getMonth();
+      const diaHasta = fechaHasta.getDate();
+      
+      // Crear fechas para comparación
+      const fechaTurnoComparable = new Date(añoTurno, mesTurno, diaTurno);
+      const fechaDesdeComparable = new Date(añoDesde, mesDesde, diaDesde);
+      const fechaHastaComparable = new Date(añoHasta, mesHasta, diaHasta);
+      
+      console.log(`Rango: ${diaTurno}/${mesTurno + 1}/${añoTurno} entre ${diaDesde}/${mesDesde + 1}/${añoDesde} y ${diaHasta}/${mesHasta + 1}/${añoHasta}`);
+      return fechaTurnoComparable >= fechaDesdeComparable && fechaTurnoComparable <= fechaHastaComparable;
     });
     if (turnos.length === 0) {
       mostrarResultadoConsulta(`
