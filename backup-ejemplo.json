@@ -1,277 +1,157 @@
 {
-  "usuario": "usuario@ejemplo.com",
-  "fechaBackup": "2024-01-15T14:30:00.000Z",
-  "version": "1.0",
-  "totalTurnos": 45,
+  "metadata": {
+    "fechaCreacion": "2025-08-23T10:30:00.000Z",
+    "version": "1.0",
+    "descripcion": "Backup de ejemplo con turnos de julio y agosto 2025",
+    "totalTurnos": 12,
+    "totalViajes": 47
+  },
   "turnos": [
     {
-      "inicio": "2024-07-01T08:00:00.000Z",
-      "fin": "2024-07-01T17:00:00.000Z",
+      "inicio": "2025-07-01T08:00:00.000Z",
+      "fin": "2025-07-01T18:30:00.000Z",
       "importes": [
-        {"valor": 15000, "hora": "08:15", "tipo": "Efectivo"},
-        {"valor": 18000, "hora": "09:30", "tipo": "Transferencia"},
-        {"valor": 12000, "hora": "10:45", "tipo": "Efectivo"},
-        {"valor": 22000, "hora": "11:20", "tipo": "Efectivo"},
-        {"valor": 16000, "hora": "12:15", "tipo": "Transferencia"},
-        {"valor": 14000, "hora": "13:30", "tipo": "Efectivo"},
-        {"valor": 19000, "hora": "14:45", "tipo": "Efectivo"},
-        {"valor": 25000, "hora": "15:20", "tipo": "Transferencia"},
-        {"valor": 17000, "hora": "16:10", "tipo": "Efectivo"}
+        { "valor": 2500, "hora": "08:15:00", "tipo": "Efectivo" },
+        { "valor": 3200, "hora": "09:45:00", "tipo": "Transferencia" },
+        { "valor": 1800, "hora": "11:20:00", "tipo": "Efectivo" },
+        { "valor": 4100, "hora": "13:30:00", "tipo": "Efectivo" },
+        { "valor": 2800, "hora": "15:15:00", "tipo": "Vale" },
+        { "valor": 3500, "hora": "16:45:00", "tipo": "Transferencia" },
+        { "valor": 2200, "hora": "17:30:00", "tipo": "Efectivo" }
       ]
     },
     {
-      "inicio": "2024-07-02T08:00:00.000Z",
-      "fin": "2024-07-02T17:00:00.000Z",
+      "inicio": "2025-07-02T08:00:00.000Z",
+      "fin": "2025-07-02T19:00:00.000Z",
       "importes": [
-        {"valor": 16000, "hora": "08:20", "tipo": "Efectivo"},
-        {"valor": 20000, "hora": "09:15", "tipo": "Transferencia"},
-        {"valor": 13000, "hora": "10:30", "tipo": "Efectivo"},
-        {"valor": 18000, "hora": "11:45", "tipo": "Efectivo"},
-        {"valor": 22000, "hora": "12:30", "tipo": "Transferencia"},
-        {"valor": 15000, "hora": "13:45", "tipo": "Efectivo"},
-        {"valor": 19000, "hora": "14:20", "tipo": "Efectivo"},
-        {"valor": 24000, "hora": "15:30", "tipo": "Transferencia"},
-        {"valor": 17000, "hora": "16:15", "tipo": "Efectivo"}
+        { "valor": 3100, "hora": "08:30:00", "tipo": "Efectivo" },
+        { "valor": 2600, "hora": "10:15:00", "tipo": "Transferencia" },
+        { "valor": 1900, "hora": "12:00:00", "tipo": "Efectivo" },
+        { "valor": 3800, "hora": "14:20:00", "tipo": "Vale" },
+        { "valor": 4200, "hora": "16:00:00", "tipo": "Efectivo" },
+        { "valor": 2900, "hora": "17:45:00", "tipo": "Transferencia" }
       ]
     },
     {
-      "inicio": "2024-07-03T08:00:00.000Z",
-      "fin": "2024-07-03T17:00:00.000Z",
+      "inicio": "2025-07-03T08:00:00.000Z",
+      "fin": "2025-07-03T18:45:00.000Z",
       "importes": [
-        {"valor": 14000, "hora": "08:10", "tipo": "Efectivo"},
-        {"valor": 19000, "hora": "09:25", "tipo": "Transferencia"},
-        {"valor": 16000, "hora": "10:40", "tipo": "Efectivo"},
-        {"valor": 21000, "hora": "11:15", "tipo": "Efectivo"},
-        {"valor": 18000, "hora": "12:45", "tipo": "Transferencia"},
-        {"valor": 13000, "hora": "13:20", "tipo": "Efectivo"},
-        {"valor": 20000, "hora": "14:35", "tipo": "Efectivo"},
-        {"valor": 23000, "hora": "15:50", "tipo": "Transferencia"},
-        {"valor": 16000, "hora": "16:25", "tipo": "Efectivo"}
+        { "valor": 2800, "hora": "08:45:00", "tipo": "Efectivo" },
+        { "valor": 3500, "hora": "10:30:00", "tipo": "Transferencia" },
+        { "valor": 2100, "hora": "12:15:00", "tipo": "Efectivo" },
+        { "valor": 3900, "hora": "14:45:00", "tipo": "Vale" },
+        { "valor": 3200, "hora": "16:30:00", "tipo": "Efectivo" },
+        { "valor": 2400, "hora": "17:15:00", "tipo": "Transferencia" }
       ]
     },
     {
-      "inicio": "2024-07-04T08:00:00.000Z",
-      "fin": "2024-07-04T17:00:00.000Z",
+      "inicio": "2025-07-04T08:00:00.000Z",
+      "fin": "2025-07-04T18:00:00.000Z",
       "importes": [
-        {"valor": 17000, "hora": "08:30", "tipo": "Efectivo"},
-        {"valor": 22000, "hora": "09:45", "tipo": "Transferencia"},
-        {"valor": 15000, "hora": "10:20", "tipo": "Efectivo"},
-        {"valor": 20000, "hora": "11:35", "tipo": "Efectivo"},
-        {"valor": 18000, "hora": "12:50", "tipo": "Transferencia"},
-        {"valor": 14000, "hora": "13:25", "tipo": "Efectivo"},
-        {"valor": 21000, "hora": "14:40", "tipo": "Efectivo"},
-        {"valor": 25000, "hora": "15:15", "tipo": "Transferencia"},
-        {"valor": 19000, "hora": "16:30", "tipo": "Efectivo"}
+        { "valor": 2600, "hora": "08:20:00", "tipo": "Efectivo" },
+        { "valor": 3300, "hora": "10:00:00", "tipo": "Transferencia" },
+        { "valor": 1800, "hora": "11:45:00", "tipo": "Efectivo" },
+        { "valor": 4100, "hora": "13:15:00", "tipo": "Vale" },
+        { "valor": 2900, "hora": "15:30:00", "tipo": "Efectivo" },
+        { "valor": 3600, "hora": "16:45:00", "tipo": "Transferencia" }
       ]
     },
     {
-      "inicio": "2024-07-05T08:00:00.000Z",
-      "fin": "2024-07-05T17:00:00.000Z",
+      "inicio": "2025-07-05T08:00:00.000Z",
+      "fin": "2025-07-05T19:15:00.000Z",
       "importes": [
-        {"valor": 16000, "hora": "08:15", "tipo": "Efectivo"},
-        {"valor": 20000, "hora": "09:30", "tipo": "Transferencia"},
-        {"valor": 13000, "hora": "10:45", "tipo": "Efectivo"},
-        {"valor": 18000, "hora": "11:20", "tipo": "Efectivo"},
-        {"valor": 22000, "hora": "12:35", "tipo": "Transferencia"},
-        {"valor": 15000, "hora": "13:50", "tipo": "Efectivo"},
-        {"valor": 19000, "hora": "14:25", "tipo": "Efectivo"},
-        {"valor": 24000, "hora": "15:40", "tipo": "Transferencia"},
-        {"valor": 17000, "hora": "16:15", "tipo": "Efectivo"}
+        { "valor": 3000, "hora": "08:30:00", "tipo": "Efectivo" },
+        { "valor": 2700, "hora": "10:15:00", "tipo": "Transferencia" },
+        { "valor": 2200, "hora": "12:00:00", "tipo": "Efectivo" },
+        { "valor": 3800, "hora": "14:30:00", "tipo": "Vale" },
+        { "valor": 3400, "hora": "16:15:00", "tipo": "Efectivo" },
+        { "valor": 3100, "hora": "17:30:00", "tipo": "Transferencia" },
+        { "valor": 2500, "hora": "18:45:00", "tipo": "Efectivo" }
       ]
     },
     {
-      "inicio": "2024-08-01T08:00:00.000Z",
-      "fin": "2024-08-01T17:00:00.000Z",
+      "inicio": "2025-07-07T08:00:00.000Z",
+      "fin": "2025-07-07T18:30:00.000Z",
       "importes": [
-        {"valor": 18000, "hora": "08:20", "tipo": "Efectivo"},
-        {"valor": 23000, "hora": "09:35", "tipo": "Transferencia"},
-        {"valor": 16000, "hora": "10:50", "tipo": "Efectivo"},
-        {"valor": 21000, "hora": "11:25", "tipo": "Efectivo"},
-        {"valor": 19000, "hora": "12:40", "tipo": "Transferencia"},
-        {"valor": 14000, "hora": "13:15", "tipo": "Efectivo"},
-        {"valor": 20000, "hora": "14:30", "tipo": "Efectivo"},
-        {"valor": 25000, "hora": "15:45", "tipo": "Transferencia"},
-        {"valor": 18000, "hora": "16:20", "tipo": "Efectivo"}
+        { "valor": 2900, "hora": "08:15:00", "tipo": "Efectivo" },
+        { "valor": 3600, "hora": "10:00:00", "tipo": "Transferencia" },
+        { "valor": 2000, "hora": "11:30:00", "tipo": "Efectivo" },
+        { "valor": 4200, "hora": "13:45:00", "tipo": "Vale" },
+        { "valor": 2800, "hora": "15:20:00", "tipo": "Efectivo" },
+        { "valor": 3500, "hora": "16:45:00", "tipo": "Transferencia" }
       ]
     },
     {
-      "inicio": "2024-09-01T08:00:00.000Z",
-      "fin": "2024-09-01T17:00:00.000Z",
+      "inicio": "2025-07-08T08:00:00.000Z",
+      "fin": "2025-07-08T18:45:00.000Z",
       "importes": [
-        {"valor": 19000, "hora": "08:25", "tipo": "Efectivo"},
-        {"valor": 24000, "hora": "09:40", "tipo": "Transferencia"},
-        {"valor": 17000, "hora": "10:55", "tipo": "Efectivo"},
-        {"valor": 22000, "hora": "11:30", "tipo": "Efectivo"},
-        {"valor": 20000, "hora": "12:45", "tipo": "Transferencia"},
-        {"valor": 15000, "hora": "13:20", "tipo": "Efectivo"},
-        {"valor": 21000, "hora": "14:35", "tipo": "Efectivo"},
-        {"valor": 26000, "hora": "15:50", "tipo": "Transferencia"},
-        {"valor": 19000, "hora": "16:25", "tipo": "Efectivo"}
+        { "valor": 3200, "hora": "08:30:00", "tipo": "Efectivo" },
+        { "valor": 2500, "hora": "10:15:00", "tipo": "Transferencia" },
+        { "valor": 1900, "hora": "12:00:00", "tipo": "Efectivo" },
+        { "valor": 4000, "hora": "14:15:00", "tipo": "Vale" },
+        { "valor": 3300, "hora": "16:00:00", "tipo": "Efectivo" },
+        { "valor": 2700, "hora": "17:30:00", "tipo": "Transferencia" }
       ]
     },
     {
-      "inicio": "2024-10-01T08:00:00.000Z",
-      "fin": "2024-10-01T17:00:00.000Z",
+      "inicio": "2025-08-01T08:00:00.000Z",
+      "fin": "2025-08-01T18:30:00.000Z",
       "importes": [
-        {"valor": 20000, "hora": "08:30", "tipo": "Efectivo"},
-        {"valor": 25000, "hora": "09:45", "tipo": "Transferencia"},
-        {"valor": 18000, "hora": "10:20", "tipo": "Efectivo"},
-        {"valor": 23000, "hora": "11:35", "tipo": "Efectivo"},
-        {"valor": 21000, "hora": "12:50", "tipo": "Transferencia"},
-        {"valor": 16000, "hora": "13:25", "tipo": "Efectivo"},
-        {"valor": 22000, "hora": "14:40", "tipo": "Efectivo"},
-        {"valor": 27000, "hora": "15:15", "tipo": "Transferencia"},
-        {"valor": 20000, "hora": "16:30", "tipo": "Efectivo"}
+        { "valor": 2800, "hora": "08:20:00", "tipo": "Efectivo" },
+        { "valor": 3400, "hora": "10:00:00", "tipo": "Transferencia" },
+        { "valor": 2100, "hora": "11:45:00", "tipo": "Efectivo" },
+        { "valor": 3900, "hora": "13:30:00", "tipo": "Vale" },
+        { "valor": 3000, "hora": "15:15:00", "tipo": "Efectivo" },
+        { "valor": 3600, "hora": "16:45:00", "tipo": "Transferencia" }
       ]
     },
     {
-      "inicio": "2024-11-01T08:00:00.000Z",
-      "fin": "2024-11-01T17:00:00.000Z",
+      "inicio": "2025-08-02T08:00:00.000Z",
+      "fin": "2025-08-02T19:00:00.000Z",
       "importes": [
-        {"valor": 21000, "hora": "08:35", "tipo": "Efectivo"},
-        {"valor": 26000, "hora": "09:50", "tipo": "Transferencia"},
-        {"valor": 19000, "hora": "10:25", "tipo": "Efectivo"},
-        {"valor": 24000, "hora": "11:40", "tipo": "Efectivo"},
-        {"valor": 22000, "hora": "12:55", "tipo": "Transferencia"},
-        {"valor": 17000, "hora": "13:30", "tipo": "Efectivo"},
-        {"valor": 23000, "hora": "14:45", "tipo": "Efectivo"},
-        {"valor": 28000, "hora": "15:20", "tipo": "Transferencia"},
-        {"valor": 21000, "hora": "16:35", "tipo": "Efectivo"}
+        { "valor": 3100, "hora": "08:30:00", "tipo": "Efectivo" },
+        { "valor": 2600, "hora": "10:15:00", "tipo": "Transferencia" },
+        { "valor": 2200, "hora": "12:00:00", "tipo": "Efectivo" },
+        { "valor": 3800, "hora": "14:20:00", "tipo": "Vale" },
+        { "valor": 3500, "hora": "16:00:00", "tipo": "Efectivo" },
+        { "valor": 2900, "hora": "17:30:00", "tipo": "Transferencia" },
+        { "valor": 2400, "hora": "18:45:00", "tipo": "Efectivo" }
       ]
     },
     {
-      "inicio": "2024-12-01T08:00:00.000Z",
-      "fin": "2024-12-01T17:00:00.000Z",
+      "inicio": "2025-08-03T08:00:00.000Z",
+      "fin": "2025-08-03T18:45:00.000Z",
       "importes": [
-        {"valor": 22000, "hora": "08:40", "tipo": "Efectivo"},
-        {"valor": 27000, "hora": "09:55", "tipo": "Transferencia"},
-        {"valor": 20000, "hora": "10:30", "tipo": "Efectivo"},
-        {"valor": 25000, "hora": "11:45", "tipo": "Efectivo"},
-        {"valor": 23000, "hora": "12:30", "tipo": "Transferencia"},
-        {"valor": 18000, "hora": "13:35", "tipo": "Efectivo"},
-        {"valor": 24000, "hora": "14:50", "tipo": "Efectivo"},
-        {"valor": 29000, "hora": "15:25", "tipo": "Transferencia"},
-        {"valor": 22000, "hora": "16:40", "tipo": "Efectivo"}
+        { "valor": 2700, "hora": "08:15:00", "tipo": "Efectivo" },
+        { "valor": 3300, "hora": "10:00:00", "tipo": "Transferencia" },
+        { "valor": 2000, "hora": "11:30:00", "tipo": "Efectivo" },
+        { "valor": 4100, "hora": "13:45:00", "tipo": "Vale" },
+        { "valor": 2800, "hora": "15:20:00", "tipo": "Efectivo" },
+        { "valor": 3400, "hora": "16:45:00", "tipo": "Transferencia" }
       ]
     },
     {
-      "inicio": "2024-12-15T08:00:00.000Z",
-      "fin": "2024-12-15T17:00:00.000Z",
+      "inicio": "2025-08-04T08:00:00.000Z",
+      "fin": "2025-08-04T18:30:00.000Z",
       "importes": [
-        {"valor": 23000, "hora": "08:45", "tipo": "Efectivo"},
-        {"valor": 28000, "hora": "10:00", "tipo": "Transferencia"},
-        {"valor": 21000, "hora": "10:35", "tipo": "Efectivo"},
-        {"valor": 26000, "hora": "11:50", "tipo": "Efectivo"},
-        {"valor": 24000, "hora": "12:35", "tipo": "Transferencia"},
-        {"valor": 19000, "hora": "13:40", "tipo": "Efectivo"},
-        {"valor": 25000, "hora": "14:55", "tipo": "Efectivo"},
-        {"valor": 30000, "hora": "15:30", "tipo": "Transferencia"},
-        {"valor": 23000, "hora": "16:45", "tipo": "Efectivo"}
+        { "valor": 3000, "hora": "08:30:00", "tipo": "Efectivo" },
+        { "valor": 2500, "hora": "10:15:00", "tipo": "Transferencia" },
+        { "valor": 1900, "hora": "12:00:00", "tipo": "Efectivo" },
+        { "valor": 4000, "hora": "14:15:00", "tipo": "Vale" },
+        { "valor": 3200, "hora": "16:00:00", "tipo": "Efectivo" },
+        { "valor": 2700, "hora": "17:30:00", "tipo": "Transferencia" }
       ]
     },
     {
-      "inicio": "2024-12-20T08:00:00.000Z",
-      "fin": "2024-12-20T17:00:00.000Z",
+      "inicio": "2025-08-05T08:00:00.000Z",
+      "fin": "2025-08-05T18:45:00.000Z",
       "importes": [
-        {"valor": 24000, "hora": "08:50", "tipo": "Efectivo"},
-        {"valor": 29000, "hora": "10:05", "tipo": "Transferencia"},
-        {"valor": 22000, "hora": "10:40", "tipo": "Efectivo"},
-        {"valor": 27000, "hora": "11:55", "tipo": "Efectivo"},
-        {"valor": 25000, "hora": "12:40", "tipo": "Transferencia"},
-        {"valor": 20000, "hora": "13:45", "tipo": "Efectivo"},
-        {"valor": 26000, "hora": "15:00", "tipo": "Efectivo"},
-        {"valor": 31000, "hora": "15:35", "tipo": "Transferencia"},
-        {"valor": 24000, "hora": "16:50", "tipo": "Efectivo"}
-      ]
-    },
-    {
-      "inicio": "2024-12-25T08:00:00.000Z",
-      "fin": "2024-12-25T17:00:00.000Z",
-      "importes": [
-        {"valor": 25000, "hora": "08:55", "tipo": "Efectivo"},
-        {"valor": 30000, "hora": "10:10", "tipo": "Transferencia"},
-        {"valor": 23000, "hora": "10:45", "tipo": "Efectivo"},
-        {"valor": 28000, "hora": "12:00", "tipo": "Efectivo"},
-        {"valor": 26000, "hora": "12:45", "tipo": "Transferencia"},
-        {"valor": 21000, "hora": "13:50", "tipo": "Efectivo"},
-        {"valor": 27000, "hora": "15:05", "tipo": "Efectivo"},
-        {"valor": 32000, "hora": "15:40", "tipo": "Transferencia"},
-        {"valor": 25000, "hora": "16:55", "tipo": "Efectivo"}
-      ]
-    },
-    {
-      "inicio": "2024-12-30T08:00:00.000Z",
-      "fin": "2024-12-30T17:00:00.000Z",
-      "importes": [
-        {"valor": 26000, "hora": "09:00", "tipo": "Efectivo"},
-        {"valor": 31000, "hora": "10:15", "tipo": "Transferencia"},
-        {"valor": 24000, "hora": "10:50", "tipo": "Efectivo"},
-        {"valor": 29000, "hora": "12:05", "tipo": "Efectivo"},
-        {"valor": 27000, "hora": "12:50", "tipo": "Transferencia"},
-        {"valor": 22000, "hora": "13:55", "tipo": "Efectivo"},
-        {"valor": 28000, "hora": "15:10", "tipo": "Efectivo"},
-        {"valor": 33000, "hora": "15:45", "tipo": "Transferencia"},
-        {"valor": 26000, "hora": "17:00", "tipo": "Efectivo"}
-      ]
-    },
-    {
-      "inicio": "2025-01-01T08:00:00.000Z",
-      "fin": "2025-01-01T17:00:00.000Z",
-      "importes": [
-        {"valor": 27000, "hora": "09:05", "tipo": "Efectivo"},
-        {"valor": 32000, "hora": "10:20", "tipo": "Transferencia"},
-        {"valor": 25000, "hora": "10:55", "tipo": "Efectivo"},
-        {"valor": 30000, "hora": "12:10", "tipo": "Efectivo"},
-        {"valor": 28000, "hora": "12:55", "tipo": "Transferencia"},
-        {"valor": 23000, "hora": "14:00", "tipo": "Efectivo"},
-        {"valor": 29000, "hora": "15:15", "tipo": "Efectivo"},
-        {"valor": 34000, "hora": "15:50", "tipo": "Transferencia"},
-        {"valor": 27000, "hora": "17:05", "tipo": "Efectivo"}
-      ]
-    },
-    {
-      "inicio": "2025-01-05T08:00:00.000Z",
-      "fin": "2025-01-05T17:00:00.000Z",
-      "importes": [
-        {"valor": 28000, "hora": "09:10", "tipo": "Efectivo"},
-        {"valor": 33000, "hora": "10:25", "tipo": "Transferencia"},
-        {"valor": 26000, "hora": "11:00", "tipo": "Efectivo"},
-        {"valor": 31000, "hora": "12:15", "tipo": "Efectivo"},
-        {"valor": 29000, "hora": "13:00", "tipo": "Transferencia"},
-        {"valor": 24000, "hora": "14:05", "tipo": "Efectivo"},
-        {"valor": 30000, "hora": "15:20", "tipo": "Efectivo"},
-        {"valor": 35000, "hora": "15:55", "tipo": "Transferencia"},
-        {"valor": 28000, "hora": "17:10", "tipo": "Efectivo"}
-      ]
-    },
-    {
-      "inicio": "2025-01-10T08:00:00.000Z",
-      "fin": "2025-01-10T17:00:00.000Z",
-      "importes": [
-        {"valor": 29000, "hora": "09:15", "tipo": "Efectivo"},
-        {"valor": 34000, "hora": "10:30", "tipo": "Transferencia"},
-        {"valor": 27000, "hora": "11:05", "tipo": "Efectivo"},
-        {"valor": 32000, "hora": "12:20", "tipo": "Efectivo"},
-        {"valor": 30000, "hora": "13:05", "tipo": "Transferencia"},
-        {"valor": 25000, "hora": "14:10", "tipo": "Efectivo"},
-        {"valor": 31000, "hora": "15:25", "tipo": "Efectivo"},
-        {"valor": 36000, "hora": "16:00", "tipo": "Transferencia"},
-        {"valor": 29000, "hora": "17:15", "tipo": "Efectivo"}
-      ]
-    },
-    {
-      "inicio": "2025-01-15T08:00:00.000Z",
-      "fin": "2025-01-15T17:00:00.000Z",
-      "importes": [
-        {"valor": 30000, "hora": "09:20", "tipo": "Efectivo"},
-        {"valor": 35000, "hora": "10:35", "tipo": "Transferencia"},
-        {"valor": 28000, "hora": "11:10", "tipo": "Efectivo"},
-        {"valor": 33000, "hora": "12:25", "tipo": "Efectivo"},
-        {"valor": 31000, "hora": "13:10", "tipo": "Transferencia"},
-        {"valor": 26000, "hora": "14:15", "tipo": "Efectivo"},
-        {"valor": 32000, "hora": "15:30", "tipo": "Efectivo"},
-        {"valor": 37000, "hora": "16:05", "tipo": "Transferencia"},
-        {"valor": 30000, "hora": "17:20", "tipo": "Efectivo"}
+        { "valor": 2900, "hora": "08:20:00", "tipo": "Efectivo" },
+        { "valor": 3500, "hora": "10:00:00", "tipo": "Transferencia" },
+        { "valor": 2100, "hora": "11:45:00", "tipo": "Efectivo" },
+        { "valor": 3900, "hora": "13:30:00", "tipo": "Vale" },
+        { "valor": 3000, "hora": "15:15:00", "tipo": "Efectivo" },
+        { "valor": 3600, "hora": "16:45:00", "tipo": "Transferencia" }
       ]
     }
   ]

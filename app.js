@@ -1,6 +1,89 @@
 // --- AUTENTICACIÓN ---
 const API_URL = 'https://sheetdb.io/api/v1/09cpeqv911tr5'; // Reemplaza por tu URL real de SheetDB
 
+// --- SISTEMA DE HISTORIAL DE NAVEGACIÓN ---
+let historialNavegacion = [];
+let vistaActual = 'dashboard';
+
+// Función para agregar vista al historial
+function agregarVistaHistorial(vista) {
+  // No agregar si es la misma vista consecutiva
+  if (historialNavegacion[historialNavegacion.length - 1] !== vista) {
+    historialNavegacion.push(vista);
+    // Agregar entrada al historial del navegador
+    history.pushState({ vista: vista }, '', '#' + vista);
+    console.log('Vista agregada al historial:', vista, 'Historial completo:', historialNavegacion); // Debug
+  }
+  vistaActual = vista;
+}
+
+// Función para volver a la vista anterior
+function volverVistaAnterior() {
+  if (historialNavegacion.length > 1) {
+    historialNavegacion.pop(); // Remover vista actual
+    const vistaAnterior = historialNavegacion[historialNavegacion.length - 1];
+    vistaActual = vistaAnterior;
+    
+    console.log('Navegando de vuelta a:', vistaAnterior); // Debug
+    
+    // Navegar a la vista anterior
+    switch (vistaAnterior) {
+      case 'dashboard':
+        mostrarDashboard();
+        break;
+      case 'turno-activo':
+        mostrarTurnoActivo();
+        break;
+      case 'consulta':
+        // Mantener la consulta actual visible
+        break;
+      default:
+        mostrarDashboard();
+    }
+  } else {
+    // Si no hay historial, ir al dashboard
+    mostrarDashboard();
+  }
+}
+
+// Función para manejar el botón de retroceso del navegador
+function manejarBotonRetroceso() {
+  // Verificar si hay historial de navegación y no estamos en el dashboard principal
+  if (historialNavegacion.length > 1 && vistaActual !== 'dashboard') {
+    volverVistaAnterior();
+    return true; // Indicar que manejamos el evento
+  }
+  return false; // No manejamos el evento
+}
+
+// Event listener para el botón de retroceso del navegador
+window.addEventListener('popstate', function(event) {
+  console.log('Evento popstate detectado. Historial actual:', historialNavegacion); // Debug
+  
+  // Prevenir que el navegador recargue la página
+  event.preventDefault();
+  
+  // Verificar si hay historial de navegación
+  if (historialNavegacion.length > 1) {
+    console.log('Manejando retroceso manualmente...'); // Debug
+    // Manejar el retroceso manualmente
+    volverVistaAnterior();
+  } else {
+    console.log('No hay historial, permitiendo que el navegador cierre la app'); // Debug
+    // Si no hay historial, permitir que el navegador cierre la app
+    // Esto es el comportamiento esperado en móvil
+    return;
+  }
+});
+
+// Función para inicializar el historial
+function inicializarHistorial() {
+  historialNavegacion = ['dashboard'];
+  vistaActual = 'dashboard';
+  // Establecer el estado inicial del historial del navegador
+  history.replaceState({ vista: 'dashboard' }, '', '#dashboard');
+}
+
 function mostrarAuth(showLogin = true) {
   const auth = document.getElementById('auth-container');
   const loginForm = document.getElementById('login-form');
@@ -64,6 +147,10 @@ function usuarioLogueado() {
 function cerrarSesion() {
   limpiarSesion();
   ocultarApp();
+  
+  // Reiniciar el historial de navegación
+  inicializarHistorial();
+  
   mostrarAuth(true);
 }
 function mostrarApp() {
@@ -98,6 +185,9 @@ function mostrarApp() {
   const labelDark = document.getElementById('icon-dark-label');
   if (switchDark) switchDark.checked = dark;
   if (labelDark) labelDark.textContent = dark ? '☀️' : '🌙';
+  
+  // Inicializar el historial de navegación
+  inicializarHistorial();
   
   // Si no hay turno activo, mostrar pantalla de últimos turnos
   if (!getTurnoActivo()) {
@@ -328,6 +418,10 @@ function iniciarTurno() {
   // Mostrar pantalla principal
   const mainHeader = document.getElementById('main-header-fijo');
   if (mainHeader) mainHeader.style.display = '';
+  
+  // Agregar al historial de navegación
+  agregarVistaHistorial('turno-activo');
+  
   render();
 }
 
@@ -352,6 +446,13 @@ function finalizarTurno() {
     saveTurnos(turnos);
   }
   render();
+  
+  // Agregar al historial de navegación
+  agregarVistaHistorial('dashboard');
+  
+  // Mostrar mensaje de confirmación personalizado
+  alert('Control choferes dice: Turno finalizado exitosamente ✅');
+  
   mostrarPantallaUltimosTurnos();
 }
 
@@ -373,8 +474,14 @@ function renderEstadoTurno() {
   if (turno) {
     const inicio = new Date(turno.inicio);
     estadoDiv.innerHTML = `<b>Turno en curso:</b> ${inicio.toLocaleString('es-AR', { hour12: false })}`;
+    
+    // Agregar al historial de navegación
+    agregarVistaHistorial('turno-activo');
   } else {
     estadoDiv.innerHTML = '<b>No hay turno iniciado.</b>';
+    
+    // Agregar al historial de navegación
+    agregarVistaHistorial('dashboard');
   }
 }
 
@@ -437,6 +544,11 @@ function render() {
   // Si hay turno activo, la tabla vuelve a su lugar original
   if (turno && tablaTurnos) {
     document.querySelector('main').appendChild(tablaTurnos);
+  }
+  
+  // Agregar al historial de navegación si hay turno activo
+  if (turno) {
+    agregarVistaHistorial('turno-activo');
   }
 }
 
@@ -501,6 +613,9 @@ function renderTablaTurnosRecientes() {
     tablaTurnos.innerHTML = '';
     return;
   }
+  
+  // Agregar al historial de navegación
+  agregarVistaHistorial('dashboard');
   // Mostrar solo los dos turnos más recientes
   turnos = turnos.slice(-2);
   let html = `<div style='max-height:336px;overflow-y:auto;box-sizing:border-box;'>
@@ -588,6 +703,12 @@ function renderFecha() {
   const fecha = new Date();
   const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   document.getElementById('fecha-actual').textContent = fecha.toLocaleDateString('es-AR', opciones);
+  
+  // Agregar al historial de navegación si no hay turno activo
+  const turno = getTurnoActivo();
+  if (!turno) {
+    agregarVistaHistorial('dashboard');
+  }
 }
 
 // Utilidad para formatear importes
@@ -1047,6 +1168,10 @@ if (btnConsultaRango) {
 function mostrarResultadoConsulta(html) {
   // Cerrar el menú si está abierto
   cerrarMenu();
+  
+  // Agregar al historial de navegación
+  agregarVistaHistorial('consulta');
+  
   // Mostrar resultado en la pantalla principal
   const consultaDiv = document.getElementById('consulta-principal');
   const mainHeader = document.getElementById('main-header-fijo');
@@ -1059,7 +1184,7 @@ function mostrarResultadoConsulta(html) {
       </div>
       <div style='display:flex;justify-content:center;gap:1.5rem;margin:2.5rem 0 0.7rem 0;'>
         <button id='volver-principal' style='padding:0.7rem 1.5rem;background:#007bff;color:#fff;border:none;border-radius:4px;font-size:1.1rem;cursor:pointer;'>Volver</button>
-        <button id='descargar-pdf' style='padding:0.7rem 1.5rem;background:#43a047;color:#fff;border:none;border-radius:4px;font-size:1.1rem;cursor:pointer;'>Descargar PDF</button>
+        <button id='descargar-pdf' style='padding:0.7rem 1.5rem;background:#43a500;color:#fff;border:none;border-radius:4px;font-size:1.1rem;cursor:pointer;'>Descargar PDF</button>
       </div>
     `;
     consultaDiv.style.display = '';
@@ -1093,6 +1218,8 @@ function mostrarResultadoConsulta(html) {
     if (pdfBtn) {
       pdfBtn.addEventListener('click', function() {
         generarPDFConsulta();
+        // Agregar al historial de navegación
+        agregarVistaHistorial('consulta');
       });
     }
     const footer = document.getElementById('footer-app');
@@ -2064,6 +2191,9 @@ function mostrarPantallaUltimosTurnos() {
   if (tablaTurnos) tablaTurnos.style.display = 'none';
   if (footer) footer.style.display = '';
   
+  // Agregar al historial de navegación
+  agregarVistaHistorial('dashboard');
+  
   // Crear dashboard atractivo
   let html = `
     <div id='dashboard-container' style='max-width:600px;margin:2rem auto 2rem auto;padding:0 1rem;position:relative;z-index:2100;'>
@@ -2142,6 +2272,9 @@ function generarEstadisticasMes() {
 function mostrarManualUsuario() {
   // Cerrar el menú automáticamente
   cerrarMenu();
+  
+  // Agregar al historial de navegación
+  agregarVistaHistorial('consulta');
   
   const consultaDiv = document.getElementById('consulta-principal');
   if (!consultaDiv) return;
@@ -2299,12 +2432,29 @@ function mostrarTurnoActivo() {
   const consultaDiv = document.getElementById('consulta-principal');
   if (consultaDiv) consultaDiv.style.display = 'none';
   
+  // Mostrar el main-app y header fijo
+  const mainApp = document.getElementById('main-app');
+  const mainHeaderFixed = document.getElementById('main-header-fixed');
+  const mainScrollContainer = document.getElementById('main-scroll-container');
+  
+  if (mainApp) mainApp.style.display = 'block';
+  if (mainHeaderFixed) mainHeaderFixed.style.display = 'flex';
+  if (mainScrollContainer) mainScrollContainer.style.display = 'block';
+  
   // Ocultar el footer ya que el turno activo se muestra en main-app
   const footer = document.getElementById('footer-app');
   if (footer) footer.style.display = 'none';
   
+  // Agregar al historial de navegación
+  agregarVistaHistorial('turno-activo');
+  
   // Llamar a render para mostrar el turno activo
   render();
+  
+  // Forzar un re-render para asegurar que todo se muestre correctamente
+  setTimeout(() => {
+    render();
+  }, 100);
 }
 
 // Función para mostrar el dashboard
@@ -2312,6 +2462,18 @@ function mostrarDashboard() {
   // Ocultar la consulta y mostrar el dashboard
   const consultaDiv = document.getElementById('consulta-principal');
   if (consultaDiv) consultaDiv.style.display = 'none';
+  
+  // Mostrar el main-app y header fijo
+  const mainApp = document.getElementById('main-app');
+  const mainHeaderFixed = document.getElementById('main-header-fixed');
+  const mainScrollContainer = document.getElementById('main-scroll-container');
+  
+  if (mainApp) mainApp.style.display = 'block';
+  if (mainHeaderFixed) mainHeaderFixed.style.display = 'flex';
+  if (mainScrollContainer) mainScrollContainer.style.display = 'block';
+  
+  // Agregar al historial de navegación
+  agregarVistaHistorial('dashboard');
   
   // Llamar a la función del dashboard
   mostrarPantallaUltimosTurnos();
