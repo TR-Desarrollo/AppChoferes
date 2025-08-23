@@ -531,6 +531,9 @@ function render() {
     document.getElementById('cantidad').textContent = importes.length;
     document.getElementById('importe-input').disabled = false;
     document.querySelector('form button[type="submit"]').disabled = false;
+    
+    // Agregar resumen por tipo de pago debajo de la lista
+    agregarResumenPorTipoPago(turno);
   } else {
     if (form) form.style.display = 'none';
     if (resumen) resumen.style.display = 'none';
@@ -549,6 +552,71 @@ function render() {
   // Agregar al historial de navegación si hay turno activo
   if (turno) {
     agregarVistaHistorial('turno-activo');
+  }
+}
+
+// Función para agregar resumen por tipo de pago en el turno activo
+function agregarResumenPorTipoPago(turno) {
+  // Remover resumen anterior si existe
+  const resumenAnterior = document.getElementById('resumen-tipo-pago');
+  if (resumenAnterior) {
+    resumenAnterior.remove();
+  }
+  
+  // Calcular totales por tipo de pago
+  const totalesPorTipo = {};
+  turno.importes.forEach(imp => {
+    const tipo = typeof imp === 'object' && imp.tipo ? imp.tipo : 'Efectivo';
+    const valor = typeof imp === 'object' ? imp.valor : imp;
+    if (!totalesPorTipo[tipo]) {
+      totalesPorTipo[tipo] = 0;
+    }
+    totalesPorTipo[tipo] += valor;
+  });
+  
+  // Crear el HTML del resumen
+  let html = `
+    <div id="resumen-tipo-pago" style="margin-top: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 10px; border: 1px solid #e9ecef;">
+      <h4 style="margin: 0 0 1rem 0; color: #495057; font-size: 1.1rem; text-align: center;">💳 Resumen por Tipo de Pago</h4>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">`;
+  
+  // Agregar tarjetas para cada tipo de pago
+  Object.entries(totalesPorTipo).forEach(([tipo, total]) => {
+    let colorFondo, colorTexto;
+    
+    switch(tipo.toLowerCase()) {
+      case 'efectivo':
+        colorFondo = '#d4edda';
+        colorTexto = '#155724';
+        break;
+      case 'transferencia':
+        colorFondo = '#d1ecf1';
+        colorTexto = '#0c5460';
+        break;
+      case 'vale':
+        colorFondo = '#fff3cd';
+        colorTexto = '#856404';
+        break;
+      default:
+        colorFondo = '#e2e3e5';
+        colorTexto = '#383d41';
+    }
+    
+    html += `
+        <div style="text-align: center; padding: 0.8rem; background: ${colorFondo}; color: ${colorTexto}; border-radius: 8px; border: 1px solid ${colorTexto}20;">
+          <div style="font-weight: bold; margin-bottom: 0.3rem; font-size: 0.9rem;">${tipo}</div>
+          <div style="font-size: 1.2rem; font-weight: bold;">$${total.toFixed(2)}</div>
+        </div>`;
+  });
+  
+  html += `
+      </div>
+    </div>`;
+  
+  // Insertar el resumen después de la lista de importes
+  const lista = document.getElementById('lista-importes');
+  if (lista && lista.parentNode) {
+    lista.parentNode.insertBefore(document.createRange().createContextualFragment(html), lista.nextSibling);
   }
 }
 
@@ -812,6 +880,19 @@ function mostrarViajesHistoricos(turnos) {
   const turnosUnicos = new Set(viajes.map(v => v.idxTurno)).size;
   const promedioPorViaje = totalImportes / totalViajes;
   
+  // Calcular totales por tipo de pago
+  const totalesPorTipo = {};
+  turnos.forEach(t => {
+    t.importes.forEach(imp => {
+      const tipo = typeof imp === 'object' && imp.tipo ? imp.tipo : 'Efectivo';
+      const valor = typeof imp === 'object' ? imp.valor : imp;
+      if (!totalesPorTipo[tipo]) {
+        totalesPorTipo[tipo] = 0;
+      }
+      totalesPorTipo[tipo] += valor;
+    });
+  });
+  
   let html = `
     <!-- Header con título y estadísticas -->
     <div style='margin-bottom:2rem;'>
@@ -873,6 +954,50 @@ function mostrarViajesHistoricos(turnos) {
   html += `
           </tbody>
         </table>
+      </div>
+    </div>
+    
+    <!-- Resumen por tipo de pago -->
+    <div style='background:#fff;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;margin-bottom:2rem;'>
+      <div style='background:linear-gradient(135deg, #ff9800 0%, #f57c00 100%);color:#fff;padding:1.2rem;text-align:center;'>
+        <h3 style='margin:0;font-size:1.4rem;font-weight:600;'>💳 Resumen por Tipo de Pago</h3>
+      </div>
+      
+      <div style='padding:1.5rem;'>
+        <div style='display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:1.5rem;'>`;
+  
+  // Agregar tarjetas para cada tipo de pago
+  Object.entries(totalesPorTipo).forEach(([tipo, total]) => {
+    let colorGradiente, icono;
+    
+    switch(tipo.toLowerCase()) {
+      case 'efectivo':
+        colorGradiente = 'linear-gradient(135deg, #4caf50 0%, #45a049 100%)';
+        icono = '💵';
+        break;
+      case 'transferencia':
+        colorGradiente = 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)';
+        icono = '🏦';
+        break;
+      case 'vale':
+        colorGradiente = 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)';
+        icono = '📋';
+        break;
+      default:
+        colorGradiente = 'linear-gradient(135deg, #9e9e9e 0%, #757575 100%)';
+        icono = '💰';
+    }
+    
+    html += `
+          <div style='text-align:center;padding:1.5rem;background:${colorGradiente};color:#fff;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.2);'>
+            <div style='font-size:2rem;margin-bottom:0.5rem;'>${icono}</div>
+            <div style='font-size:1.2rem;font-weight:600;margin-bottom:0.5rem;'>${tipo}</div>
+            <div style='font-size:1.8rem;font-weight:bold;'>$${formatearImporte(total)}</div>
+          </div>`;
+  });
+  
+  html += `
+        </div>
       </div>
     </div>
     
@@ -978,6 +1103,23 @@ function mostrarViajesHistoricos(turnos) {
         background: #23272f !important;
         box-shadow: 0 4px 20px rgba(144,202,249,0.2) !important;
         border: 1px solid #4a5568 !important;
+      }
+      
+      /* Estilos para el resumen por tipo de pago en modo oscuro */
+      body.dark-mode #tabla-consulta-container + div {
+        background: #23272f !important;
+        box-shadow: 0 4px 20px rgba(144,202,249,0.2) !important;
+        border: 1px solid #4a5568 !important;
+      }
+      
+      /* Estilos para el resumen por tipo de pago del turno activo en modo oscuro */
+      body.dark-mode #resumen-tipo-pago {
+        background: #2c3e50 !important;
+        border-color: #4a5568 !important;
+      }
+      
+      body.dark-mode #resumen-tipo-pago h4 {
+        color: #e0e0e0 !important;
       }
       
       /* Responsive design */
@@ -1749,6 +1891,60 @@ function mostrarDetalleTurno(turno) {
       </div>
     </div>
     
+    <!-- Resumen por tipo de pago -->
+    <div style='background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;margin:2rem 0;'>
+      <div style='background:linear-gradient(135deg, #ff9800 0%, #f57c00 100%);color:#fff;padding:1rem;text-align:center;'>
+        <h3 style='margin:0;font-size:1.3rem;font-weight:600;'>💳 Resumen por Tipo de Pago</h3>
+      </div>
+      <div style='padding:1.5rem;'>
+        <div style='display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:1.5rem;'>`;
+  
+  // Calcular totales por tipo de pago
+  const totalesPorTipo = {};
+  turno.importes.forEach(imp => {
+    const tipo = typeof imp === 'object' && imp.tipo ? imp.tipo : 'Efectivo';
+    const valor = typeof imp === 'object' ? imp.valor : imp;
+    if (!totalesPorTipo[tipo]) {
+      totalesPorTipo[tipo] = 0;
+    }
+    totalesPorTipo[tipo] += valor;
+  });
+  
+  // Agregar tarjetas para cada tipo de pago
+  Object.entries(totalesPorTipo).forEach(([tipo, total]) => {
+    let colorGradiente, icono;
+    
+    switch(tipo.toLowerCase()) {
+      case 'efectivo':
+        colorGradiente = 'linear-gradient(135deg, #4caf50 0%, #45a049 100%)';
+        icono = '💵';
+        break;
+      case 'transferencia':
+        colorGradiente = 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)';
+        icono = '🏦';
+        break;
+      case 'vale':
+        colorGradiente = 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)';
+        icono = '📋';
+        break;
+      default:
+        colorGradiente = 'linear-gradient(135deg, #9e9e9e 0%, #757575 100%)';
+        icono = '💰';
+    }
+    
+    html += `
+          <div style='text-align:center;padding:1.5rem;background:${colorGradiente};color:#fff;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.2);'>
+            <div style='font-size:2rem;margin-bottom:0.5rem;'>${icono}</div>
+            <div style='font-size:1.2rem;font-weight:600;margin-bottom:0.5rem;'>${tipo === 'Transferencia' ? 'Transf.' : tipo}</div>
+            <div style='font-size:1.8rem;font-weight:bold;'>$${formatearImporte(total)}</div>
+          </div>`;
+  });
+  
+  html += `
+        </div>
+      </div>
+    </div>
+    
     <div style='margin-top:2rem;text-align:center;display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;'>
       <button id='volver-turnos' style='padding:1rem 2rem;background:linear-gradient(135deg, #007bff 0%, #0056b3 100%);color:#fff;border:none;border-radius:8px;font-size:1.1rem;font-weight:600;cursor:pointer;box-shadow:0 4px 15px rgba(0,123,255,0.3);transition:all 0.3s ease;'>
         ← Volver a turnos
@@ -1832,6 +2028,12 @@ function mostrarDetalleTurno(turno) {
       
       body.dark-mode #consulta-resultado-contenido h3 {
         color: #90caf9 !important;
+      }
+      
+      /* Estilos para el resumen por tipo de pago en modo oscuro */
+      body.dark-mode #consulta-resultado-contenido .resumen-tipo-pago {
+        background: #2c3e50 !important;
+        border: 1px solid #4a5568 !important;
       }
       
       @media (max-width: 768px) {
